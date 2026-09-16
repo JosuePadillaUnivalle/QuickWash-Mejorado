@@ -1,0 +1,34 @@
+{
+  "original_archivos_verificados": 95,
+  "original_sin_cambios": true,
+  "commit_original": "5cec304ab4efd6afb22a7f77e7bf226022fb1cae",
+  "restauracion_sql": "OK",
+  "usuarios_demo": 2,
+  "reservas_demo": 4,
+  "http": [
+    {
+      "ruta": "/ingresar",
+      "estado": 200
+    },
+    {
+      "ruta": "/registro",
+      "estado": 200
+    },
+    {
+      "ruta": "/css/app.css",
+      "estado": 200
+    },
+    {
+      "ruta": "/js/app.js",
+      "estado": 200
+    },
+    {
+      "ruta": "/images/univalle.png",
+      "estado": 200
+    },
+    {
+      "ruta": "POST /reservas sin CSRF",
+      "estado": 419
+    }
+  ]
+}

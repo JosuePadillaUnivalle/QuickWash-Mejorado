@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="1100" height="900" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1100 900" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="1100" height="900"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-900)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="180" y="85" width="740" height="745" style="stroke: rgb(78%,81%,83%); stroke-linecap: butt; stroke-width: 1.5; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="370.623" y="797" style="font-family: Helvetica; font-size: 23px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,1594) scale(1,-1)">QuickWash Campus | V1 Mejorado</text>
+			<circle cx="65" cy="540" r="18" style="stroke: rgb(15%,19%,23%); stroke-linecap: butt; stroke-width: 2; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<polyline points="65 522, 65 460" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="35 500, 95 500" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="65 460, 37 425" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="65 460, 93 425" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<text x="22.474999999999994" y="395" style="font-family: Helvetica; font-size: 18px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,790) scale(1,-1)">Estudiante</text>
+			<circle cx="1035" cy="540" r="18" style="stroke: rgb(15%,19%,23%); stroke-linecap: butt; stroke-width: 2; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<polyline points="1035 522, 1035 460" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1005 500, 1065 500" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1035 460, 1007 425" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1035 460, 1063 425" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<text x="986.976" y="395" style="font-family: Helvetica; font-size: 18px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,790) scale(1,-1)">Personal de</text>
+			<text x="992.979" y="373" style="font-family: Helvetica; font-size: 18px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,746) scale(1,-1)">lavandería</text>
+			<polyline points="95 500, 250 645" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="95 500, 250 525" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="95 500, 250 405" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="95 500, 250 285" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="95 500, 140 750, 420 750" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="95 500, 130 135, 420 135" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="95 500, 145 200, 710 200, 710 247" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1005 500, 960 750, 680 750" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1005 500, 845 610" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1005 500, 845 450" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<polyline points="1005 500, 975 135, 680 135" style="stroke: rgb(45%,49%,53%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd;"/>
+			<ellipse cx="550.0" cy="750.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="529.777" y="760" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,1520) scale(1,-1)">CU-02</text>
+			<text x="503.32" y="739" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,1478) scale(1,-1)">Iniciar sesión</text>
+			<ellipse cx="380.0" cy="645.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="359.777" y="655" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,1310) scale(1,-1)">CU-01</text>
+			<text x="308.416" y="634" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,1268) scale(1,-1)">Registrar estudiante</text>
+			<ellipse cx="380.0" cy="525.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="359.777" y="535" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,1070) scale(1,-1)">CU-03</text>
+			<text x="295.08" y="514" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,1028) scale(1,-1)">Consultar disponibilidad</text>
+			<ellipse cx="380.0" cy="405.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="359.777" y="415" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,830) scale(1,-1)">CU-04</text>
+			<text x="318.656" y="394" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,788) scale(1,-1)">Registrar reserva</text>
+			<ellipse cx="380.0" cy="285.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="359.777" y="295" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,590) scale(1,-1)">CU-05</text>
+			<text x="298.20799999999997" y="274" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,548) scale(1,-1)">Consultar mis reservas</text>
+			<ellipse cx="710.0" cy="285.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="689.777" y="295" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,590) scale(1,-1)">CU-06</text>
+			<text x="649.096" y="274" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,548) scale(1,-1)">Cancelar reserva</text>
+			<ellipse cx="710.0" cy="610.0" rx="135.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="689.777" y="620" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,1240) scale(1,-1)">CU-07</text>
+			<text x="653.976" y="599" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,1198) scale(1,-1)">Consultar todas</text>
+			<text x="666.88" y="581" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,1162) scale(1,-1)">las reservas</text>
+			<ellipse cx="710.0" cy="450.0" rx="135.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="689.777" y="460" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,920) scale(1,-1)">CU-08</text>
+			<text x="653.5360000000001" y="439" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,878) scale(1,-1)">Cambiar estado</text>
+			<ellipse cx="550.0" cy="135.0" rx="130.0" ry="38.0" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.6; fill: rgb(98%,96%,96%); fill-rule: evenodd;"/>
+			<text x="529.777" y="145" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,290) scale(1,-1)">CU-09</text>
+			<text x="501.992" y="124" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,248) scale(1,-1)">Cerrar sesión</text>
+			<polyline points="380 443, 380 487" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd; stroke-dasharray: 7, 5;"/>
+			<polyline points="385.2196 476.1946, 380 487, 374.7804 476.1946" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd; stroke-dasharray: 7, 5;"/>
+			<text x="407.04" y="460" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,920) scale(1,-1)">«include»</text>
+			<polyline points="580 285, 510 285" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd; stroke-dasharray: 7, 5;"/>
+			<polyline points="520.8054 290.2196, 510 285, 520.8054 279.7804" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd; stroke-dasharray: 7, 5;"/>
+			<text x="519.202" y="305" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,610) scale(1,-1)">«extend»</text>
+			<polyline points="710 488, 710 572" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd; stroke-dasharray: 7, 5;"/>
+			<polyline points="715.2196 561.1946, 710 572, 704.7804 561.1946" style="stroke: rgb(64%,14%,26%); stroke-linecap: butt; stroke-width: 1.5; fill: None; fill-rule: evenodd; stroke-dasharray: 7, 5;"/>
+			<text x="729.202" y="525" style="font-family: Helvetica; font-size: 14px;fill: rgb(64%,14%,26%); stroke:none;" transform="translate(0,1050) scale(1,-1)">«extend»</text>
+			<text x="331.664" y="52" style="font-family: Helvetica; font-size: 16px;fill: rgb(15%,19%,23%); stroke:none;" transform="translate(0,104) scale(1,-1)">Cancelación estudiantil: propia + Pendiente + antes del inicio.</text>
+			<text x="346.344" y="25" style="font-family: Helvetica; font-size: 16px;fill: rgb(45%,49%,53%); stroke:none;" transform="translate(0,50) scale(1,-1)">La sesión es precondición de las operaciones protegidas.</text>
+		</g>
+	</g>
+</svg>
