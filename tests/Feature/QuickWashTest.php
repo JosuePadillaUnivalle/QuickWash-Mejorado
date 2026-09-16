@@ -27,9 +27,56 @@ class QuickWashTest extends TestCase
 
     public function test_registration_creates_student_and_ignores_role_escalation(): void
     {
-        $this->post('/registro', ['name' => 'Ana', 'email' => 'ANA@example.com', 'password' => 'Password123!', 'password_confirmation' => 'Password123!', 'role' => 'personal'])->assertRedirect('/inicio');
-        $this->assertDatabaseHas('users', ['email' => 'ana@example.com', 'role' => 'estudiante']);
+        $this->post('/registro', ['name' => 'Ana', 'email' => ' ANA@EST.UNIVALLE.EDU ', 'password' => 'Password123!', 'password_confirmation' => 'Password123!', 'role' => 'personal'])->assertRedirect('/inicio');
+        $this->assertDatabaseHas('users', ['email' => 'ana@est.univalle.edu', 'role' => 'estudiante']);
         $this->assertAuthenticated();
+    }
+    public static function invalidStudentEmails(): array
+    {
+        return [['ana@gmail.com'], ['ana@univalle.edu'], ['ana@sub.est.univalle.edu'], ['ana@est.univalle.edu.ejemplo.com'], ['ana@fakeest.univalle.edu'], ['ana@est-univalle.edu']];
+    }
+    #[DataProvider('invalidStudentEmails')]
+    public function test_registration_requires_exact_student_domain(string $email): void
+    {
+        $this->post('/registro', ['name'=>'Ana', 'email'=>$email, 'password'=>'Password123!', 'password_confirmation'=>'Password123!'])->assertSessionHasErrors('email');
+        $this->assertDatabaseCount('users', 2);
+        $this->assertGuest();
+    }
+    #[DataProvider('invalidStudentEmails')]
+    public function test_existing_student_outside_domain_cannot_login_even_with_valid_password(string $email): void
+    {
+        $this->student->update(['email'=>$email]);
+        $this->post('/ingresar', ['email'=>$email, 'password'=>'password', 'remember'=>'1'])->assertSessionHasErrors('email');
+        $this->assertGuest();
+        $this->get('/reservas')->assertRedirect('/ingresar');
+    }
+    public function test_institutional_login_normalizes_case_and_spaces(): void
+    {
+        $this->post('/ingresar', ['email'=>' '.strtoupper($this->student->email).' ', 'password'=>'password'])->assertRedirect('/inicio');
+        $this->assertAuthenticatedAs($this->student);
+    }
+    public function test_staff_can_login_with_assigned_nonstudent_email(): void
+    {
+        $this->staff->update(['email'=>'personal@quickwash.test']);
+        $this->post('/ingresar', ['email'=>'personal@quickwash.test', 'password'=>'password'])->assertRedirect('/inicio');
+        $this->assertAuthenticatedAs($this->staff);
+    }
+    public function test_old_noninstitutional_student_session_is_closed(): void
+    {
+        $this->student->update(['email'=>'antiguo@example.com']);
+        $this->actingAs($this->student)->post('/reservas', $this->payload())
+            ->assertRedirect('/ingresar')->assertSessionHasErrors('email');
+        $this->assertGuest();
+        $this->assertDatabaseCount('reservations', 0);
+    }
+    public function test_demo_email_upgrade_preserves_existing_reservations(): void
+    {
+        $this->student->update(['email'=>'estudiante@quickwash.test', 'name'=>'Alex Rivera']);
+        $reservation = $this->book();
+        $this->seed(\Database\Seeders\DemoSeeder::class);
+        $this->assertSame('estudiante@est.univalle.edu', $this->student->fresh()->email);
+        $this->assertSame($this->student->id, $reservation->fresh()->user_id);
+        $this->assertDatabaseCount('reservations', 1);
     }
     public function test_registration_rejects_duplicate_email_and_unconfirmed_password(): void
     {

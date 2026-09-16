@@ -10,7 +10,7 @@ Route::middleware('guest')->group(function () {
     Route::view('/registro', 'auth.register')->name('register');
     Route::post('/registro', [AuthController::class, 'register'])->middleware('throttle:6,1');
 });
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'student.email'])->group(function () {
     Route::post('/salir', [AuthController::class, 'logout'])->name('logout');
     Route::get('/inicio', DashboardController::class)->name('dashboard');
     Route::get('/reservas', [ReservationController::class, 'index'])->name('reservations.index');

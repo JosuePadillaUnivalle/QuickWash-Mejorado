@@ -5,17 +5,20 @@ QuickWash Campus | V1 Mejorado | UNIVALLE
 Fuente: enunciado del examen entregado por el solicitante. Se implementa la organización digital de turnos; la reducción efectiva de filas deberá medirse en un piloto.
 
 ## HU-01 · Registro de estudiante
-Como estudiante, quiero registrarme con mi nombre, correo y contraseña para acceder a las reservas.
+Como estudiante, quiero registrarme con mi nombre, correo institucional @est.univalle.edu y contraseña para acceder a las reservas.
 Prioridad: alta. Caso: CU-01.
-- Con correo nuevo y datos válidos, se crea una cuenta Estudiante y se inicia su sesión.
+- Con correo institucional nuevo y datos válidos, se crea una cuenta Estudiante y se inicia su sesión.
 - Correo duplicado, campo vacío o confirmación incorrecta produce errores sin crear la cuenta.
 - La contraseña tiene mínimo ocho caracteres y se guarda como hash.
 - El registro público no permite obtener el rol Personal.
+- Se rechazan otros dominios, subdominios y sufijos similares; se normalizan mayúsculas y espacios exteriores.
 
 ## HU-02 · Inicio de sesión
 Como estudiante o miembro del personal, quiero iniciar sesión para acceder a las funciones de mi rol.
 Prioridad: alta. Caso: CU-02.
 - Credenciales correctas abren el panel del rol; credenciales incorrectas no autentican.
+- El estudiante debe usar @est.univalle.edu incluso si su cuenta fue creada antes de esta regla. El personal usa su correo asignado.
+- Las sesiones anteriores de estudiantes con correo externo se cierran al acceder a una ruta protegida.
 - Se renueva la sesión y se limita la repetición de intentos.
 - Sin sesión no se accede a reservas.
 

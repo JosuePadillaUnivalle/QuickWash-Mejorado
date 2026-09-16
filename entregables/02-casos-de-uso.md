@@ -8,13 +8,13 @@ La base de datos es interna, no un actor.
 
 ## CU-01 · Registrar estudiante
 Actor: Estudiante. Precondición: sin sesión.
-Flujo: abrir Registro; ingresar nombre, correo, contraseña y confirmación; validar; guardar rol Estudiante; iniciar sesión; abrir panel.
-Alternativas: duplicados o datos inválidos; informar sin crear cuenta.
+Flujo: abrir Registro; ingresar nombre, correo @est.univalle.edu, contraseña y confirmación; validar; guardar rol Estudiante; iniciar sesión; abrir panel.
+Alternativas: dominio distinto a @est.univalle.edu, duplicados o datos inválidos; informar sin crear cuenta.
 Postcondición: cuenta y sesión disponibles. HU-01.
 
 ## CU-02 · Iniciar sesión
 Actores: Estudiante y Personal. Precondición: cuenta existente.
-Flujo: ingresar credenciales; validar; renovar sesión; abrir panel del rol.
+Flujo: ingresar credenciales; validar contraseña y dominio @est.univalle.edu para estudiantes; renovar sesión; abrir panel del rol. Personal utiliza su correo asignado.
 Alternativas: credenciales incorrectas o exceso de intentos; denegar.
 Postcondición: sesión autenticada. HU-02.
 

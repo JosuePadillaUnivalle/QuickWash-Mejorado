@@ -133,17 +133,61 @@ xml=ET.parse(OUT/'pruebas/phpunit.xml').getroot().find('testsuite')
 para(f"{xml.get('tests')} pruebas · {xml.get('assertions')} aserciones · {xml.get('failures')} fallos · {xml.get('errors')} errores",'QH2')
 para('Resultado tomado del XML generado por PHPUnit en esta entrega. Las bases de prueba están aisladas de la base operativa.')
 markdown('04-pruebas-y-entrega.md')
-para('Evidencia del sistema','QH1')
-para('Panel del estudiante después de que el personal finalizó la reserva histórica QW-0001. La cantidad antigua se conserva como No registrada.')
-im=Image(str(OUT/'capturas/06-panel-finalizada.png'))
-ratio=im.imageHeight/im.imageWidth
-im.drawWidth=505; im.drawHeight=505*ratio
-story.append(im)
-para('Captura real del navegador local; no representa una medición de reducción de filas. Las demás capturas se adjuntan en la carpeta capturas/.','QSmall')
-story.append(Spacer(1,15))
-para('Acceso a la aplicación','QH2')
-para('Local: http://127.0.0.1:8010. Inicio: INICIAR.cmd. Para instalación nueva: preparar.ps1 -Demo. Credenciales de demostración e instrucciones en README.md.')
-para('El repositorio contiene el código, documentación, migraciones, exportación de demostración y pruebas. La publicación web de esta versión necesita un destino independiente del prototipo.')
+evidences = [
+    ('08-ingreso-institucional.png', 'Acceso por tipo de cuenta',
+     'La pantalla indica el dominio @est.univalle.edu para estudiantes y el uso del correo asignado para personal.',
+     'HU-02 / CU-02. La validación también se aplica en el servidor.'),
+    ('09-rechazo-correo-externo.png', 'Rechazo de correo externo',
+     'Al enviar elena.prueba@example.com, el registro informa que se requiere el dominio institucional. La cuenta no se crea.',
+     'HU-01 / CU-01. Resultado esperado y observado: error de dominio.'),
+    ('10-registro-institucional.png', 'Registro válido de estudiante',
+     'Con elena.prueba@est.univalle.edu se crea Elena Prueba y se abre su panel con el mensaje de bienvenida.',
+     'HU-01 / CU-01. Resultado: cuenta con rol Estudiante y sesión iniciada.'),
+    ('11-disponibilidad-lavadoras.png', 'Disponibilidad para el turno',
+     'Consulta del 16/09/2026 a las 08:00. Se muestran lavadoras disponibles y una en mantenimiento que no puede seleccionarse.',
+     'HU-03 / CU-03. La ocupación se verifica nuevamente al confirmar.'),
+    ('12-confirmar-prendas.png', 'Confirmación de datos',
+     'El diálogo resume Lavadora 02, 15 prendas, fecha y horario antes de guardar la reserva.',
+     'HU-04 / CU-04. Los cuatro datos exigidos están presentes.'),
+    ('13-reserva-institucional-creada.png', 'Reserva guardada',
+     'QW-0007 aparece en el historial propio con 15 prendas, fecha 16/09/2026, turno 08:00 a 09:00 y estado Pendiente.',
+     'HU-04 y HU-05 / CU-04 y CU-05. El mensaje confirma la operación.'),
+    ('14-cancelacion-institucional.png', 'Cancelación antes del inicio',
+     'Elena cancela QW-0007 antes de comenzar el turno. El estado cambia a Cancelada y aparece el mensaje de disponibilidad liberada.',
+     'HU-06 / CU-06. La fila deja de ofrecer acciones de cancelación.'),
+    ('15-personal-reservas-globales.png', 'Consulta global del personal',
+     'El personal ingresa con personal@quickwash.test y consulta reservas de varios estudiantes, incluyendo sus correos y cantidades.',
+     'HU-07 / CU-07. El correo anterior de Camila se conserva como dato histórico; ya no permite ingreso.'),
+    ('16-filtro-finalizadas.png', 'Filtro de estados',
+     'Al elegir Finalizada, el listado muestra las tres reservas que coinciden. La cuenta demo de Alex ya usa el dominio institucional.',
+     'HU-07 / CU-07. Las reservas finalizadas conservan sus datos y no pueden reabrirse.'),
+    ('17-catalogo-personal.png', 'Catálogo de lavadoras',
+     'El personal consulta las lavadoras habilitadas y el equipo en mantenimiento. El catálogo es de consulta en esta versión.',
+     'La disponibilidad por turno se administra mediante las reservas.'),
+    ('18-cuenta-demo-institucional.png', 'Nuevo correo de demostración',
+     'La cuenta demo ingresa como estudiante@est.univalle.edu. Conserva su contraseña de demostración y su historial.',
+     'HU-02 / CU-02. El ingreso fue aceptado y abrió el panel de Alex.'),
+    ('19-panel-historial-conservado.png', 'Historial después del cambio',
+     'El panel de Alex mantiene las reservas históricas. Las cantidades que no existían en la versión inicial se muestran como No registrada.',
+     'HU-05 / CU-05. El cambio del correo demo conserva el identificador del estudiante y sus reservas.'),
+    ('20-panel-movil-institucional.png', 'Panel en pantalla móvil',
+     'Verificación en 390 por 844 píxeles. El panel conserva la navegación, el logo y sus indicadores en pantalla pequeña.',
+     'Resultado: sin desbordamiento horizontal del documento. Las tablas se desplazan dentro de su propio contenedor.'),
+]
+for index, (filename, title, description, result) in enumerate(evidences, 1):
+    para(f'Evidencia {index:02d} | {title}', 'QH1')
+    para(description)
+    im = Image(str(OUT/'capturas'/filename))
+    scale = min(505/im.imageWidth, 500/im.imageHeight)
+    im.drawWidth = im.imageWidth*scale
+    im.drawHeight = im.imageHeight*scale
+    story.append(Spacer(1,12))
+    story.append(im)
+    story.append(Spacer(1,12))
+    para(result, 'QBody')
+    para(f'Archivo: capturas/{filename}. Captura real de la aplicación local, tomada el 15 o 16/09/2026.', 'QSmall')
+    if index < len(evidences):
+        story.append(PageBreak())
 doc=SimpleDocTemplate(str(OUT/'QuickWash-Campus-Informe.pdf'),pagesize=A4,rightMargin=42,leftMargin=42,topMargin=51,bottomMargin=53,title='QuickWash Campus - V1 Mejorado',author='Proyecto QuickWash Campus')
 doc.build(story,onFirstPage=page_header,onLaterPages=page_header)
 print('PDF y SVG generados.')

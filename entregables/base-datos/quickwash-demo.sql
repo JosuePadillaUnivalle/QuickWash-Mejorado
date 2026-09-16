@@ -29,7 +29,7 @@ INSERT INTO "reservations" VALUES(3,1,3,'2026-09-12 14:00:00','2026-09-12 15:00:
 INSERT INTO "reservations" VALUES(4,1,1,'2026-09-11 11:00:00','2026-09-11 12:00:00','cancelada','2026-09-15 23:31:17','2026-09-15 23:31:17',11);
 CREATE TABLE "sessions" ("id" varchar not null, "user_id" integer, "ip_address" varchar, "user_agent" text, "payload" text not null, "last_activity" integer not null, primary key ("id"));
 CREATE TABLE "users" ("id" integer primary key autoincrement not null, "name" varchar not null, "email" varchar not null, "email_verified_at" datetime, "password" varchar not null, "remember_token" varchar, "created_at" datetime, "updated_at" datetime, "role" varchar not null default 'estudiante');
-INSERT INTO "users" VALUES(1,'Alex Rivera','estudiante@quickwash.test',NULL,'$2y$12$Xt43b3I31C86h3T70En3X.fOFI2LjjqTczRkAYGc1aNMD1/3dvGXO',NULL,'2026-09-15 23:31:16','2026-09-15 23:31:16','estudiante');
+INSERT INTO "users" VALUES(1,'Alex Rivera','estudiante@est.univalle.edu',NULL,'$2y$12$Xt43b3I31C86h3T70En3X.fOFI2LjjqTczRkAYGc1aNMD1/3dvGXO',NULL,'2026-09-15 23:31:16','2026-09-15 23:31:16','estudiante');
 INSERT INTO "users" VALUES(2,'María Flores','personal@quickwash.test',NULL,'$2y$12$VXVw3ouTRydGZW93JbIMd.g7BoxAex1hLUba0r8w8r51kVIhdr/oa',NULL,'2026-09-15 23:31:17','2026-09-15 23:31:17','personal');
 CREATE UNIQUE INDEX "users_email_unique" on "users" ("email");
 CREATE INDEX "sessions_user_id_index" on "sessions" ("user_id");

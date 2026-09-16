@@ -9,7 +9,12 @@ class DemoSeeder extends Seeder
     {
         if (!app()->environment(['local', 'testing'])) throw new \RuntimeException('Los datos de demostración solo se permiten en local/testing.');
         $this->call(DatabaseSeeder::class);
-        $student = User::firstOrCreate(['email' => 'estudiante@quickwash.test'], ['name' => 'Alex Rivera', 'password' => 'QuickWash2026!']);
+        // Update only the known local demo identity, retaining its reservations.
+        if (!User::where('email', 'estudiante@est.univalle.edu')->exists()) {
+            User::where('email', 'estudiante@quickwash.test')->where('name', 'Alex Rivera')
+                ->where('role', 'estudiante')->update(['email' => 'estudiante@est.univalle.edu', 'remember_token' => null]);
+        }
+        $student = User::firstOrCreate(['email' => 'estudiante@est.univalle.edu'], ['name' => 'Alex Rivera', 'password' => 'QuickWash2026!']);
         $staff = User::firstOrCreate(['email' => 'personal@quickwash.test'], ['name' => 'María Flores', 'password' => 'QuickWash2026!']);
         $staff->forceFill(['role' => 'personal'])->save();
         if ($student->reservations()->exists()) return;

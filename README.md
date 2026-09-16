@@ -12,11 +12,13 @@ La persona que revise el código necesita acceso al repositorio o el ZIP de entr
 Si el servidor ya está funcionando en 8010, basta con abrir la dirección. Puerto alternativo: .\iniciar.ps1 -Puerto 8011.
 
 Cuentas locales:
-- Estudiante: estudiante@quickwash.test
+- Estudiante: estudiante@est.univalle.edu
 - Personal: personal@quickwash.test
 - Contraseña de ambas: QuickWash2026!
 
 La base local contiene registros migrados y datos de pruebas manuales.
+El registro y el acceso de estudiantes exigen el dominio exacto @est.univalle.edu. El personal ingresa con su correo asignado. Los correos se normalizan a minúsculas y sin espacios exteriores.
+Al ejecutar DemoSeeder, la cuenta demo antigua de Alex conserva su ID, contraseña y reservas con el nuevo correo. Otras cuentas históricas con dominio externo conservan sus datos, pero no pueden ingresar; tampoco mantienen acceso mediante sesiones antiguas.
 
 ## Instalación nueva en Windows
 PHP 8.3+ en PATH con SQLite, mbstring, OpenSSL, fileinfo, curl, DOM y XML.
@@ -38,7 +40,7 @@ En Linux/macOS con PHP/Composer configurados:
 No requiere Node, Vite, colas ni tareas programadas. La tipografía web tiene respaldo local sin Internet.
 
 ## Funciones y reglas
-- Registro de estudiantes, inicio y cierre de sesión.
+- Registro e ingreso de estudiantes exclusivamente con @est.univalle.edu; inicio y cierre de sesión por rol.
 - Disponibilidad por fecha/turno; reserva de lavadora con cantidad de prendas.
 - Historial propio, filtros y cancelación antes del horario.
 - Personal: consulta global y modificación exclusiva del estado.
@@ -70,6 +72,7 @@ En este Windows, antes de comandos PHP define: $env:PHPRC="$PWD\tools".
 
 Incluye flujos, validaciones, permisos, migración y dos pruebas con cuatro procesos PHP simultáneos. Las pruebas usan bases temporales independientes.
 Resultados: entregables/pruebas. Capturas reales: entregables/capturas.
+Última verificación: 51 pruebas y 273 aserciones aprobadas. El PDF incluye trece nuevas capturas de registro, acceso, reservas, cancelación, personal y vista móvil; hay veinte PNG en total.
 
 ## Entrega académica
 - QuickWash-Campus-Informe.pdf: informe para revisar/imprimir.

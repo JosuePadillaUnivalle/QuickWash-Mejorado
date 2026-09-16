@@ -3,7 +3,8 @@ Motor verificado: SQLite. Otros motores configurables en Laravel no están valid
 
 ## USERS
 id PK; name; email único; password hash; role (estudiante/personal); remember_token; timestamps.
-El registro normaliza correo y asigna rol Estudiante.
+El registro normaliza correo, exige el dominio exacto @est.univalle.edu y asigna rol Estudiante. El acceso aplica la misma regla al estudiante; el personal puede usar otro dominio.
+DemoSeeder actualiza solo la cuenta ficticia Alex Rivera de estudiante@quickwash.test a estudiante@est.univalle.edu conservando su ID y reservas. Las demás cuentas históricas no se renombran automáticamente.
 
 ## MACHINES
 id PK; name único; type; capacity en kg; location; status (disponible/mantenimiento); timestamps; deleted_at.
