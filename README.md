@@ -2,6 +2,9 @@
 
 Aplicación Laravel/PHP para la lavandería de UNIVALLE, adaptada al enunciado real del examen. Carpeta, base y repositorio independientes; la versión original y su despliegue se conservan.
 
+Repositorio independiente (privado): https://github.com/JosuePadillaUnivalle/QuickWash-V1-Mejorado
+La persona que revise el código necesita acceso al repositorio o el ZIP de entrega.
+
 ## Ejecutar en este equipo
 1. Haz doble clic en **INICIAR.cmd**.
 2. Abre http://127.0.0.1:8010.
