@@ -1,5 +1,5 @@
 # Base de datos y migración
-Motor verificado: SQLite. Otros motores configurables en Laravel no están validados en esta entrega.
+Pruebas automatizadas: SQLite. Despliegue Railway: PostgreSQL; se verifican migración, servicio y datos conservados al publicar.
 
 ## USERS
 id PK; name; email único; password hash; role (estudiante/personal); remember_token; timestamps.
@@ -11,16 +11,17 @@ id PK; name único; type; capacity en kg; location; status (disponible/mantenimi
 Se conservan equipos históricos; las nuevas reservas solo ofrecen lavadoras no eliminadas.
 
 ## RESERVATIONS
-id PK; user_id FK; machine_id FK; starts_at; ends_at; garment_count; status; timestamps.
+id PK; user_id FK; machine_id FK; starts_at; ends_at; garment_count; status; processing_started_at; processing_ends_at; collected_at; timestamps.
 Código visual: QW-0001, etc. Fechas en America/La_Paz.
 garment_count es entero obligatorio en altas nuevas y NULL en registros históricos sin dato.
-Estados: pendiente, en_proceso, finalizada, cancelada.
+Estados: pendiente, en_proceso, esperando_recogida, finalizada, cancelada.
+Los tres campos nuevos son timestamps nullable. Los históricos finalizados conservan NULL; no se inventa una recogida. El horario reservado permanece inmutable. El intervalo real permite conservar sesenta minutos cuando hay retraso.
 Índice user_id/status para consultas de cupo.
 
 ## RESERVATION_SLOTS
 id PK; reservation_id FK único; machine_id FK; starts_at.
 Índice único machine_id/starts_at impide doble ocupación.
-Cancelar elimina la ocupación, no la reserva. Finalizar conserva la ocupación histórica.
+Cancelar elimina la ocupación, no la reserva. Finalizar conserva la exclusividad histórica del turno. La ocupación física actual se deriva de En proceso/Esperando recogida; se libera al confirmar Recogido.
 
 ## Relaciones
 Usuario 1 a N Reservas. Máquina 1 a N Reservas. Reserva 1 a 0..1 Ocupación.
@@ -46,5 +47,11 @@ La instalación recomendada usa migraciones + DemoSeeder para generar fechas rel
 La base operativa, .env, sesiones y usuarios reales no se publican en el repositorio.
 
 ## Administración del catálogo
-El personal puede crear, editar y retirar lavadoras. La baja actualiza deleted_at; las reservas conservan su relación mediante withTrashed. El estado de mantenimiento no se deriva de las reservas. La edición que retira de servicio y la eliminación revalidan que no haya Pendientes ni En proceso dentro de una transacción con bloqueo de la máquina, compatible con el bloqueo de las nuevas reservas.
-No se requiere migración adicional: los campos y la eliminación lógica ya existían.
+El personal puede crear, editar y retirar lavadoras. La baja actualiza deleted_at; las reservas conservan su relación mediante withTrashed. El estado de mantenimiento no se deriva de las reservas. La edición que retira de servicio y la eliminación revalidan que no haya Pendientes, En proceso ni Esperando recogida dentro de una transacción con bloqueo de la máquina, compatible con el bloqueo de las nuevas reservas.
+La migración 2026_09_17_000001 agrega los campos del ciclo y un índice máquina/estado/inicio. No borra registros ni cambia usuarios.
+
+## Reloj, recogida y transacciones
+quickwash:sync sincroniza cada máquina dentro de una transacción y un bloqueo de fila. En SQLite adquiere primero el bloqueo de escritura. Recoger usa el mismo bloqueo y vuelve a comprobar propiedad y estado; la operación es idempotente.
+Si no hay otro lavado activo, inicia el pendiente más antiguo cuyo horario llegó. Si la última recogida ocurrió después de su horario, utiliza esa hora como inicio real. El fin real suma la duración reservada. Una recogida tardía nunca produce dos lavados simultáneos.
+Railway ejecuta web y reloj cada cinco segundos con supervisión común; si cualquiera termina, reinicia el servicio. Las peticiones autenticadas también sincronizan como respaldo. El listado consulta cada diez segundos, sin recargar filtros ni cerrar diálogos.
+No revertir la migración mientras exista Esperando recogida: una reversión de esquema perdería las marcas de recogida. Conservar copia antes de una reversión.

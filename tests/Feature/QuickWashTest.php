@@ -166,7 +166,7 @@ class QuickWashTest extends TestCase
         $response = $this->actingAs($this->student)->patch(route('reservations.cancel', $reservation));
         if ($allowed) { $response->assertRedirect()->assertSessionHasNoErrors(); }
         else { $response->assertSessionHasErrors('status'); }
-        $this->assertSame($allowed ? 'cancelada' : 'pendiente', $reservation->fresh()->status);
+        $this->assertSame($allowed ? 'cancelada' : 'en_proceso', $reservation->fresh()->status);
     }
     public function test_student_cannot_cancel_others_or_change_any_status(): void
     {
@@ -184,15 +184,17 @@ class QuickWashTest extends TestCase
             $this->assertSame($status, $reservation->fresh()->status);
         }
     }
-    public function test_staff_completes_lifecycle_and_student_sees_finalized(): void
+    public function test_automatic_lifecycle_and_student_pickup(): void
     {
         $reservation = $this->book();
         $this->travelTo(Carbon::parse('2026-09-16 10:00'));
-        foreach (['en_proceso', 'finalizada'] as $status) {
-            $this->actingAs($this->staff)->patch(route('reservations.status', $reservation), ['status'=>$status])->assertRedirect()->assertSessionHasNoErrors();
-            $this->assertSame($status, $reservation->fresh()->status);
-            $this->actingAs($this->student)->get('/reservas')->assertOk()->assertSee(Reservation::LABELS[$status]);
-        }
+        $this->actingAs($this->student)->get('/reservas')->assertSee('Lavado automático');
+        $this->assertSame('en_proceso', $reservation->fresh()->status);
+        $this->travelTo(Carbon::parse('2026-09-16 11:00'));
+        $this->get('/reservas')->assertSee('Esperando recogida')->assertSee('>Recogido</button>', false);
+        $this->patch(route('reservations.collect', $reservation))->assertSessionHasNoErrors();
+        $this->assertSame('finalizada', $reservation->fresh()->status);
+        $this->assertNotNull($reservation->fresh()->collected_at);
     }
     public function test_staff_cannot_modify_student_machine_schedule_or_quantity(): void
     {
@@ -210,15 +212,16 @@ class QuickWashTest extends TestCase
         $reservation->update(['status'=>'finalizada']);
         $this->patch(route('reservations.status', $reservation), ['status'=>'pendiente'])->assertSessionHasErrors('status');
     }
-    public function test_staff_can_cancel_a_pending_or_in_progress_reservation(): void
+    public function test_staff_can_cancel_future_pending_but_not_running_wash(): void
     {
-        foreach (['pendiente','en_proceso'] as $status) {
-            $reservation = $this->book();
-            $reservation->update(['status'=>$status]);
-            $this->actingAs($this->staff)->patch(route('reservations.status', $reservation), ['status'=>'cancelada'])->assertRedirect()->assertSessionHasNoErrors();
-            $this->assertSame('cancelada', $reservation->fresh()->status);
-        }
-        $this->assertDatabaseCount('reservation_slots', 0);
+        $reservation = $this->book();
+        $this->actingAs($this->staff)->patch(route('reservations.status', $reservation), ['status'=>'cancelada'])->assertSessionHasNoErrors();
+        $this->assertSame('cancelada', $reservation->fresh()->status);
+        $running = $this->book();
+        $this->travelTo(Carbon::parse('2026-09-16 10:00'));
+        $this->patch(route('reservations.status', $running), ['status'=>'cancelada'])->assertSessionHasErrors('status');
+        $this->assertSame('en_proceso', $running->fresh()->status);
+        $this->assertDatabaseCount('reservation_slots', 1);
     }
     public function test_invalid_slots_are_rejected(): void
     {
@@ -251,7 +254,7 @@ class QuickWashTest extends TestCase
     {
         $this->book();
         $this->travelTo(Carbon::parse('2026-09-16 10:00'));
-        $this->actingAs($this->student)->get('/reservas')->assertSee('Horario iniciado')->assertDontSee('>Cancelar</button>', false);
+        $this->actingAs($this->student)->get('/reservas')->assertSee('Lavado automático')->assertDontSee('>Cancelar</button>', false);
     }
     public function test_database_unique_constraint_protects_slot_without_service(): void
     {

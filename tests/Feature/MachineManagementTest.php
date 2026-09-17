@@ -104,19 +104,15 @@ class MachineManagementTest extends TestCase
             ->assertOk()->assertSee('Horario iniciado')->assertDontSee('Disponible en este turno');
     }
 
-    public function test_five_hours_after_slot_staff_can_start_then_finish_manually(): void
+    public function test_five_hours_after_slot_clothing_still_requires_pickup(): void
     {
         $reservation = $this->booking();
         $this->travelTo(Carbon::parse('2026-09-16 23:00:00'));
-        $this->actingAs($this->staff)->get('/reservas')->assertSee('Sin inicio registrado')->assertSee('Seleccionar nuevo estado');
-        $this->assertSame('pendiente', $reservation->fresh()->status);
-        $this->patch(route('reservations.status', $reservation), ['status'=>'en_proceso'])->assertSessionHasNoErrors();
-        $this->assertSame('en_proceso', $reservation->fresh()->status);
-        $this->get('/reservas')->assertSee('Falta confirmar finalización');
-        $this->travelTo(Carbon::parse('2026-09-17 05:00:00'));
-        $this->assertSame('en_proceso', $reservation->fresh()->status);
-        $this->patch(route('reservations.status', $reservation), ['status'=>'finalizada'])->assertSessionHasNoErrors();
-        $this->actingAs($this->student)->get('/reservas')->assertSee('Finalizada')->assertDontSee('Falta confirmar finalización');
-        $this->assertSame('finalizada', $reservation->fresh()->status);
+        $this->actingAs($this->staff)->get('/reservas')->assertSee('Esperando recogida')->assertDontSee('Seleccionar nuevo estado');
+        $this->assertSame('esperando_recogida', $reservation->fresh()->status);
+        $this->delete(route('machines.destroy', $this->machine))->assertSessionHasErrors('machine');
+        $this->patch(route('reservations.status', $reservation), ['status'=>'finalizada'])->assertSessionHasErrors('status');
+        $this->actingAs($this->student)->patch(route('reservations.collect', $reservation))->assertSessionHasNoErrors();
+        $this->get('/reservas')->assertSee('Finalizado');
     }
 }

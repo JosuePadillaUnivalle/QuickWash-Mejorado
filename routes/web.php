@@ -10,13 +10,14 @@ Route::middleware('guest')->group(function () {
     Route::view('/registro', 'auth.register')->name('register');
     Route::post('/registro', [AuthController::class, 'register'])->middleware('throttle:6,1');
 });
-Route::middleware(['auth', 'student.email'])->group(function () {
+Route::middleware(['auth', 'student.email', \App\Http\Middleware\SyncReservations::class])->group(function () {
     Route::post('/salir', [AuthController::class, 'logout'])->name('logout');
     Route::get('/inicio', DashboardController::class)->name('dashboard');
     Route::get('/reservas', [ReservationController::class, 'index'])->name('reservations.index');
     Route::middleware('role:estudiante')->group(function () {
         Route::get('/reservar', [ReservationController::class, 'create'])->name('reservations.create');
         Route::post('/reservas', [ReservationController::class, 'store'])->name('reservations.store');
+        Route::patch('/reservas/{reservation}/recogido', [ReservationController::class, 'collect'])->name('reservations.collect');
         Route::patch('/reservas/{reservation}/cancelar', [ReservationController::class, 'cancel'])->name('reservations.cancel');
     });
     Route::middleware('role:personal')->group(function () {

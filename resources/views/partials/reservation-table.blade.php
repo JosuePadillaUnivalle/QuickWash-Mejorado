@@ -4,14 +4,17 @@
 <td><strong>{{ $reservation->starts_at->format('d/m/Y') }}</strong><small>{{ $reservation->starts_at->format('H:i') }} – {{ $reservation->ends_at->format('H:i') }}</small></td>
 <td><span class="garment-badge">{{ $reservation->garment_count ?? 'No registrada' }}</span>@if(is_null($reservation->garment_count))<small>Reserva de versión inicial</small>@endif</td>
 <td><span class="status {{ $reservation->status }}">{{ \App\Models\Reservation::LABELS[$reservation->status] }}</span>
-@if($reservation->ends_at->lte(now()) && in_array($reservation->status, \App\Models\Reservation::ACTIVE))<small>Turno terminado · {{ $reservation->status === 'pendiente' ? 'Sin inicio registrado' : 'Falta confirmar finalización' }}</small>@endif</td>
+@if($reservation->status === 'pendiente' && $reservation->starts_at->lte(now()))<small>En espera de que se libere la máquina</small>@endif
+@if($reservation->status === 'en_proceso')<small>Lavado hasta {{ $reservation->processing_ends_at?->format('d/m H:i') }}</small>@endif
+@if($reservation->status === 'esperando_recogida')<small>Lavado terminado · La máquina sigue ocupada</small>@endif
+@if($reservation->processing_started_at && !$reservation->processing_started_at->equalTo($reservation->starts_at))<small>Inicio real: {{ $reservation->processing_started_at->format('d/m H:i') }}</small>@endif
+@if($reservation->collected_at)<small>Recogido: {{ $reservation->collected_at->format('d/m H:i') }}</small>@endif</td>
 @unless($compact ?? false)<td>
-@if(auth()->user()->isStaff() && count(\App\Models\Reservation::TRANSITIONS[$reservation->status]))
-<form method="POST" action="{{ route('reservations.status', $reservation) }}" class="inline-form" data-confirm="¿Actualizar el estado de la reserva {{ $reservation->code }}?">@csrf @method('PATCH')
-<select name="status" required aria-label="Nuevo estado de {{ $reservation->code }}"><option value="" selected disabled>Seleccionar nuevo estado</option>@foreach(\App\Models\Reservation::TRANSITIONS[$reservation->status] as $next)<option value="{{ $next }}" @disabled($next === 'en_proceso' && $reservation->starts_at->isFuture())>{{ \App\Models\Reservation::LABELS[$next] }}{{ $next === 'en_proceso' && $reservation->starts_at->isFuture() ? ' (desde '.$reservation->starts_at->format('d/m H:i').')' : '' }}</option>@endforeach</select><button class="button small">Actualizar</button></form>
-@elseif(!auth()->user()->isStaff() && $reservation->canBeCancelledByStudent())
-<form method="POST" action="{{ route('reservations.cancel', $reservation) }}" data-confirm="¿Cancelar la reserva {{ $reservation->code }}? El turno quedará libre para otro estudiante.">@csrf @method('PATCH')<button class="button small danger-outline">Cancelar</button></form>
-@else<span class="muted">{{ !auth()->user()->isStaff() && $reservation->status === 'pendiente' ? 'Horario iniciado' : 'Sin acciones' }}</span>@endif
+@if(!auth()->user()->isStaff() && $reservation->status === 'esperando_recogida')
+<form method="POST" action="{{ route('reservations.collect', $reservation) }}" data-confirm="¿Confirmas que ya retiraste toda tu ropa de la máquina? La reserva {{ $reservation->code }} finalizará y el siguiente lavado podrá comenzar.">@csrf @method('PATCH')<button class="button small">Recogido</button></form>
+@elseif($reservation->canBeCancelledByStudent())
+<form method="POST" action="{{ route(auth()->user()->isStaff() ? 'reservations.status' : 'reservations.cancel', $reservation) }}" data-confirm="¿Cancelar la reserva {{ $reservation->code }}? El turno quedará libre para otro estudiante.">@csrf @method('PATCH')<input type="hidden" name="status" value="cancelada"><button class="button small danger-outline">Cancelar</button></form>
+@else<span class="muted">{{ $reservation->status === 'esperando_recogida' ? 'El estudiante confirma la recogida' : ($reservation->status === 'en_proceso' ? 'Lavado automático' : 'Sin acciones') }}</span>@endif
 </td>@endunless</tr>
 @empty<tr><td colspan="7"><div class="empty-state"><span class="empty-icon"><x-icon name="calendar"/></span><h3>No hay reservas para mostrar</h3><p>{{ request()->hasAny(['status', 'search', 'date']) ? 'Prueba con otros filtros para encontrar tus reservas.' : 'Cuando hagas una reserva, podrás seguir su estado aquí.' }}</p>@unless(auth()->user()->isStaff())<a class="button small" href="{{ route('reservations.create') }}">Reservar una máquina <x-icon name="arrow"/></a>@endunless</div></td></tr>@endforelse
 </tbody></table></div>

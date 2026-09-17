@@ -14,11 +14,12 @@ usecase "CU-04\nRegistrar reserva" as U4
 usecase "CU-05\nConsultar mis reservas" as U5
 usecase "CU-06\nCancelar reserva" as U6
 usecase "CU-07\nConsultar todas las reservas" as U7
-usecase "CU-08\nCambiar estado" as U8
+usecase "CU-08\nCancelar reserva futura" as U8
 usecase "CU-09\nCerrar sesión" as U9
 usecase "CU-10\nCrear lavadora" as U10
 usecase "CU-11\nEditar lavadora" as U11
 usecase "CU-12\nEliminar lavadora" as U12
+usecase "CU-13\nConfirmar recogida" as U13
 }
 E -- U1
 E -- U2
@@ -27,6 +28,7 @@ E -- U4
 E -- U5
 E -- U6
 E -- U9
+E -- U13
 P -- U2
 P -- U7
 P -- U8
@@ -37,6 +39,7 @@ P -- U12
 U4 ..> U3 : <<include>>
 U6 ..> U5 : <<extend>>
 U8 ..> U7 : <<extend>>
+U13 ..> U5 : <<extend>>
 note bottom of U6
 Propia, Pendiente y antes del inicio.
 end note

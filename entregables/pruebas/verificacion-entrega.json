@@ -47,5 +47,18 @@
     "estados_manuales": true,
     "crud_personal": true,
     "reserva_prueba_local": "QW-0008"
+  },
+  "recogida_automatica": {
+    "fecha": "2026-09-17",
+    "pruebas": 71,
+    "aserciones": 408,
+    "capturas_totales": 28,
+    "flujo": "Pendiente -> En proceso -> Esperando recogida -> Recogido -> Finalizado",
+    "reloj_segundos": 5,
+    "consulta_pantalla_segundos": 10,
+    "original_preservado": true,
+    "demo_sql_restauracion": "OK",
+    "prueba_navegador": "QW-0009 local, intervalo de 60 minutos desplazado; sin cambios en reloj Windows ni datos reales",
+    "anteriores_estados_manuales": "Sustituidos por esta revisión"
   }
 }

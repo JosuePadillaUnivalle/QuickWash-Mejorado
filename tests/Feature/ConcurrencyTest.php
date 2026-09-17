@@ -11,7 +11,7 @@ class ConcurrencyTest extends TestCase
     {
         parent::setUp();
         $this->databaseFile = tempnam(sys_get_temp_dir(), 'qw-concurrency-');
-        config(['database.connections.sqlite.database'=>$this->databaseFile]);
+        config(['database.default'=>'sqlite', 'database.connections.sqlite.database'=>$this->databaseFile]);
         DB::purge('sqlite');
         Artisan::call('migrate', ['--force'=>true]);
     }
@@ -66,5 +66,21 @@ class ConcurrencyTest extends TestCase
         $this->assertSame(3, count(array_filter($results, fn ($r) => $r === 'BOOKED')));
         $this->assertSame(1, count(array_filter($results, fn ($r) => $r === 'REJECTED')));
         $this->assertSame(3, $student->reservations()->whereIn('status', Reservation::ACTIVE)->count());
+    }
+    public function test_parallel_pickup_and_clock_start_only_one_successor(): void
+    {
+        $student = User::factory()->create();
+        $machine = Machine::create(['name'=>'Lavadora recogida','capacity'=>8,'location'=>'Campus','type'=>'lavadora','status'=>'disponible']);
+        $first = Reservation::create(['user_id'=>$student->id,'machine_id'=>$machine->id,'starts_at'=>now()->subHours(3),'ends_at'=>now()->subHours(2),'garment_count'=>5,'status'=>'esperando_recogida']);
+        $next = Reservation::create(['user_id'=>$student->id,'machine_id'=>$machine->id,'starts_at'=>now()->subHours(2),'ends_at'=>now()->subHour(),'garment_count'=>5,'status'=>'pendiente']);
+        $last = Reservation::create(['user_id'=>$student->id,'machine_id'=>$machine->id,'starts_at'=>now()->subHour(),'ends_at'=>now(),'garment_count'=>5,'status'=>'pendiente']);
+        $results = $this->race([[$student->id,$first->id,'collect'],[$student->id,$first->id,'collect'],[$student->id,$first->id,'sync'],[$student->id,$first->id,'sync']]);
+        $this->assertSame(2, count(array_filter($results, fn($r) => $r === 'COLLECTED')));
+        $this->assertSame(2, count(array_filter($results, fn($r) => $r === 'SYNCED')));
+        $this->assertSame('finalizada', $first->fresh()->status);
+        $this->assertSame('en_proceso', $next->fresh()->status);
+        $this->assertSame('pendiente', $last->fresh()->status);
+        $this->assertTrue($first->fresh()->collected_at->equalTo($next->fresh()->processing_started_at));
+        $this->assertEquals(3600, $next->fresh()->processing_started_at->diffInSeconds($next->fresh()->processing_ends_at));
     }
 }

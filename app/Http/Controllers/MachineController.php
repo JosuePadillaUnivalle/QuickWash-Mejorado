@@ -11,6 +11,7 @@ class MachineController extends Controller
     {
         return view('machines.index', ['machines' => Machine::where('type', 'lavadora')
             ->withCount(['reservations as active_reservations_count' => fn ($q) => $q->whereIn('status', Reservation::ACTIVE)])
+            ->withCount(['reservations as occupied_count' => fn ($q) => $q->whereIn('status', ['en_proceso', 'esperando_recogida'])])
             ->orderBy('name')->get()]);
     }
 

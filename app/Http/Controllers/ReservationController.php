@@ -32,7 +32,9 @@ class ReservationController extends Controller
         $time = $request->input('time', sprintf('%02d:00', $hour));
         $start = Carbon::parse($date.' '.$time);
         $occupied = DB::table('reservation_slots')->where('starts_at', $start)->pluck('machine_id')->all();
-        return view('reservations.create', ['machines' => Machine::where('type', 'lavadora')->orderBy('name')->get(), 'occupied' => $occupied, 'date' => $date, 'time' => $time, 'start' => $start, 'active' => $request->user()->reservations()->whereIn('status', Reservation::ACTIVE)->count()]);
+        $awaitingPickup = Reservation::where('status', 'esperando_recogida')->pluck('machine_id')->all();
+        $occupied = array_unique(array_merge($occupied, $awaitingPickup));
+        return view('reservations.create', ['machines' => Machine::where('type', 'lavadora')->orderBy('name')->get(), 'occupied' => $occupied, 'awaitingPickup' => $awaitingPickup, 'date' => $date, 'time' => $time, 'start' => $start, 'active' => $request->user()->reservations()->whereIn('status', Reservation::ACTIVE)->count()]);
     }
     public function store(Request $request, BookingService $service)
     {
@@ -45,12 +47,17 @@ class ReservationController extends Controller
         $service->transition($reservation, $request->user(), 'cancelada');
         return back()->with('success', 'Reserva cancelada. El turno vuelve a estar disponible.');
     }
+    public function collect(Request $request, Reservation $reservation, \App\Services\ReservationLifecycle $lifecycle)
+    {
+        $lifecycle->collect($reservation, $request->user());
+        return back()->with('success', 'Recogida confirmada. Tu reserva está finalizada y la máquina se ha liberado para el siguiente lavado.');
+    }
     public function updateStatus(Request $request, Reservation $reservation, BookingService $service)
     {
         $data = $request->validate([
             'status' => ['required', Rule::in(array_keys(Reservation::LABELS))],
             'user_id' => 'prohibited', 'machine_id' => 'prohibited', 'garment_count' => 'prohibited',
-            'date' => 'prohibited', 'time' => 'prohibited', 'starts_at' => 'prohibited', 'ends_at' => 'prohibited',
+            'date' => 'prohibited', 'time' => 'prohibited', 'starts_at' => 'prohibited', 'ends_at' => 'prohibited', 'processing_started_at' => 'prohibited', 'processing_ends_at' => 'prohibited', 'collected_at' => 'prohibited',
         ]);
         $service->transition($reservation, $request->user(), $data['status']);
         return back()->with('success', 'Estado actualizado. El estudiante puede verlo en sus reservas.');

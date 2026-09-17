@@ -27,6 +27,10 @@ class BookingService
             if ($machine->status !== 'disponible') {
                 throw ValidationException::withMessages(['machine_id' => 'Esta máquina está en mantenimiento. Elige otra.']);
             }
+            app(ReservationLifecycle::class)->syncMachine($machineId);
+            if (Reservation::where('machine_id', $machineId)->where('status', 'esperando_recogida')->exists()) {
+                throw ValidationException::withMessages(['machine_id' => 'Esta máquina tiene ropa pendiente de recogida. Elige otra o espera a que se libere.']);
+            }
             if ($lockedUser->reservations()->whereIn('status', Reservation::ACTIVE)->count() >= 3) {
                 throw ValidationException::withMessages(['slot' => 'Ya tienes 3 reservas activas. Cancela una pendiente antes de su inicio o espera a que un lavado finalice.']);
             }
@@ -42,6 +46,7 @@ class BookingService
     {
         DB::transaction(function () use ($reservation, $actor, $status) {
             $this->lockSqliteWriter($actor);
+            Machine::withTrashed()->whereKey($reservation->machine_id)->lockForUpdate()->firstOrFail();
             $item = Reservation::whereKey($reservation->id)->lockForUpdate()->firstOrFail();
             if (!$actor->isStaff()) {
                 abort_unless($actor->role === 'estudiante' && $item->user_id === $actor->id && $status === 'cancelada', 403);
@@ -49,11 +54,8 @@ class BookingService
                     throw ValidationException::withMessages(['status' => 'Solo puedes cancelar reservas pendientes antes de que comience el horario.']);
                 }
             }
-            if (!in_array($status, Reservation::TRANSITIONS[$item->status], true)) {
-                throw ValidationException::withMessages(['status' => 'El estado cambió o esta transición no está permitida.']);
-            }
-            if ($status === 'en_proceso' && $item->starts_at->isFuture()) {
-                throw ValidationException::withMessages(['status' => 'El lavado solo puede comenzar desde la hora reservada.']);
+            if ($status !== 'cancelada' || !$item->canBeCancelledByStudent()) {
+                throw ValidationException::withMessages(['status' => 'El inicio es automático y solo el estudiante confirma la recogida. Solo se permite cancelar una reserva pendiente antes de su horario.']);
             }
             $item->update(['status' => $status]);
             if ($status === 'cancelada') DB::table('reservation_slots')->where('reservation_id', $item->id)->delete();

@@ -2,8 +2,8 @@
 QuickWash Campus | V1 Mejorado
 
 ## Actores
-Estudiante: registra su cuenta, consulta disponibilidad, reserva y consulta/cancela solicitudes propias.
-Personal de lavandería: consulta todas las solicitudes, modifica sus estados y administra el catálogo de lavadoras.
+Estudiante: registra su cuenta, consulta disponibilidad, reserva y consulta/cancela solicitudes propias y confirma su recogida.
+Personal de lavandería: consulta todas las solicitudes, supervisa estados, cancela reservas futuras y administra el catálogo de lavadoras.
 La base de datos es interna, no un actor.
 
 ## CU-01 · Registrar estudiante
@@ -52,12 +52,12 @@ Alternativa: no hay coincidencias; informar sin modificar.
 Postcondición: reservas consultadas. HU-07.
 Punto de extensión: selección de actualización de una reserva.
 
-## CU-08 · Cambiar estado
-Actor: Personal. Precondiciones: sesión de personal; reserva con transición disponible.
-Flujo: elegir nuevo estado desde el listado; pulsar Actualizar; confirmar; validar rol/transición; guardar exclusivamente estado; mostrar resultado.
-Alternativas: salto inválido, inicio anticipado, conflicto de estado o cambio de otro campo; rechazar.
-Postcondición: el estudiante puede consultar el nuevo estado. HU-08.
-Extiende CU-07: consultar no exige modificar.
+## CU-08 · Cancelar reserva futura desde Personal
+Actor: Personal. Precondiciones: sesión de personal; reserva Pendiente antes de su hora original.
+Flujo: elegir Cancelar desde el listado global; confirmar; validar rol, estado y horario; guardar Cancelada y liberar turno.
+Alternativas: reserva iniciada, estado cambiado o intento de modificar otros campos; rechazar.
+Postcondición: turno y cupo liberados. HU-08.
+Extiende CU-07: consultar no exige cancelar. El personal no confirma recogidas.
 
 ## CU-09 · Cerrar sesión
 Actores: Estudiante y Personal. Precondición: sesión activa.
@@ -79,8 +79,17 @@ Actor: Personal. Precondición: lavadora existente sin reservas activas.
 Flujo: pulsar Eliminar; confirmar; revalidar permisos y reservas; retirar del catálogo mediante eliminación lógica.
 Alternativas: hay reservas activas o el equipo ya fue eliminado; no retirar. Postcondición: no admite nuevas reservas y conserva su historial. HU-12.
 
+## CU-13 · Confirmar recogida
+Actor: Estudiante. Precondiciones: sesión; reserva propia en Esperando recogida, con lavado terminado.
+Flujo: abrir Mis reservas; pulsar Recogido; confirmar que retiró las prendas; revalidar propiedad y estado bajo bloqueo de máquina; guardar Finalizado y fecha de recogida; iniciar el siguiente turno vencido si existe.
+Alternativas: Volver no modifica nada; reserva ajena o lavado en curso se rechazan; repetición de confirmación ya guardada es inocua.
+Postcondición: cupo del estudiante liberado; máquina libre o atendiendo el siguiente turno. HU-13.
+Extiende CU-05 en el punto opcional de recogida elegible.
+
 ## Diagrama y semántica
-Ver diagrama-casos-de-uso.svg y su fuente editable .puml.
-Asociaciones: línea continua. Include/extend: línea discontinua dirigida al caso incluido/base.
-Iniciar sesión es precondición de operaciones protegidas, no include repetido: una sesión permite varias operaciones.
-No se modelan notificaciones ni cobros. CU-10 a CU-12 incorporan la ampliación de administración del catálogo solicitada; no cambian la regla de edición exclusiva del estado en las reservas.
+Ver diagrama-casos-de-uso.svg y su fuente editable .puml: dos actores y trece casos.
+Asociaciones continuas; include/extend son flechas discontinuas hacia el caso incluido/base.
+CU-04 incluye CU-03; CU-06 y CU-13 extienden CU-05; CU-08 extiende CU-07.
+La sesión es precondición de las operaciones protegidas. La base de datos y el reloj automático pertenecen al sistema y no son actores externos.
+Regla temporal interna: Pendiente inicia por horario si la máquina está libre. Terminado el lavado pasa a Esperando recogida. Solo CU-13 finaliza la reserva. Una reserva retrasada conserva el turno original y añade el intervalo real.
+Esta revisión incorpora la solicitud explícita de inicio automático y recogida del estudiante, además de la administración de máquinas.

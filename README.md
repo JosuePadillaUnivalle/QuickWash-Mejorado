@@ -36,24 +36,25 @@ En Linux/macOS con PHP/Composer configurados:
 5. php artisan migrate --seed
 6. php artisan db:seed --class=DemoSeeder (opcional, solo local)
 7. php artisan serve --host=127.0.0.1 --port=8010
+8. En otra consola: php artisan quickwash:sync --watch (mantenerla abierta).
 
-No requiere Node, Vite, colas ni tareas programadas. La tipografía web tiene respaldo local sin Internet.
+El inicio local de Windows abre también el reloj automático. No requiere Node, Vite ni colas. La tipografía web tiene respaldo local sin Internet.
 
 ## Funciones y reglas
 - Registro e ingreso de estudiantes exclusivamente con @est.univalle.edu; inicio y cierre de sesión por rol.
 - Disponibilidad por fecha/turno; reserva de lavadora con cantidad de prendas.
 - Historial propio, filtros y cancelación antes del horario.
-- Personal: consulta global y modificación exclusiva del estado.
+- Personal: consulta global y cancelación de reservas pendientes futuras.
 - Turno único por máquina y máximo tres reservas activas.
-- Pendiente y En proceso son activas; Finalizada y Cancelada no consumen cupo.
+- Pendiente, En proceso y Esperando recogida son activas; Finalizado y Cancelada no consumen cupo.
 - El estudiante cancela únicamente Pendiente antes del inicio.
-- Transiciones: Pendiente → En proceso → Finalizada. Personal también puede cancelar desde Pendiente o En proceso.
+- Flujo: Pendiente → En proceso (automático) → Esperando recogida (automático) → Finalizado (botón Recogido del estudiante).
 - Finalizada y Cancelada son terminales; no se inicia antes de la hora reservada.
 - Personal: crear, editar y eliminar lavadoras; cambiar Habilitada/Mantenimiento.
 - No se elimina ni pasa a mantenimiento una lavadora con reservas activas. La eliminación conserva el historial.
 
 Decisiones no definidas por el examen: turnos de 60 minutos de 08:00 a 20:00, próximos 30 días, horario Bolivia y cantidad entera de 1 a 100 prendas. La cantidad no equivale a peso; debe respetarse la capacidad en kg.
-No se implementan notificaciones ni procesos automáticos.
+No hay notificaciones por correo/SMS. El inicio y el fin del lavado se calculan automáticamente; finalizar requiere recogida.
 
 ## Datos
 - Base operativa local: database/database.sqlite, excluida de Git.
@@ -71,9 +72,9 @@ En este Windows, antes de comandos PHP define: $env:PHPRC="$PWD\tools".
 ## Pruebas
     powershell -ExecutionPolicy Bypass -File probar.ps1
 
-Incluye flujos, validaciones, permisos, migración y dos pruebas con cuatro procesos PHP simultáneos. Las pruebas usan bases temporales independientes.
+Incluye flujos, validaciones, permisos, migración y tres pruebas con cuatro procesos PHP simultáneos. Las pruebas usan bases temporales independientes.
 Resultados: entregables/pruebas. Capturas reales: entregables/capturas.
-Última verificación: 59 pruebas y 340 aserciones aprobadas. Hay 25 capturas PNG; las 21 a 25 muestran el catálogo administrable y el cambio manual de estados.
+Última verificación: 71 pruebas y 408 aserciones aprobadas. Las capturas 26 a 28 muestran el flujo automático y la recogida.
 
 ## Entrega académica
 - QuickWash-Campus-Informe.pdf: informe para revisar/imprimir.
@@ -90,5 +91,12 @@ No ejecutar DemoSeeder en producción ni reutilizar base, clave, cookies o despl
 La reducción de filas debe validarse con un piloto; las pruebas técnicas no miden ese resultado.
 
 ## Estados y mantenimiento
-La columna Estado muestra el valor guardado. Para cambiarlo, el personal selecciona un nuevo estado, pulsa Actualizar y confirma. Llegar a la hora solo habilita En proceso; no cambia automáticamente la reserva. Desde En proceso se puede confirmar Finalizada. Si el estudiante no acudió, el personal puede cancelar la pendiente.
-Lavadora 04 se inicializa en mantenimiento como ejemplo. Para habilitarla: Catálogo de máquinas > Editar > Estado del equipo: Habilitada > Guardar lavadora. Mantenimiento no significa que exista una reserva; significa fuera de servicio.
+Antes del turno: Pendiente. Al inicio: En proceso automáticamente. Al terminar: Esperando recogida. Después de retirar la ropa, el estudiante pulsa Recogido y confirma: Finalizado.
+Solo el dueño puede confirmar y nunca antes del fin del lavado. La máquina permanece ocupada hasta ese momento. Los turnos siguientes ya reservados esperan y conservan una hora completa; el listado muestra su inicio y fin reales. No se aceptan nuevas reservas en una máquina con recogida pendiente.
+El personal administra máquinas y puede cancelar pendientes futuras. No inicia ni finaliza en nombre del estudiante.
+Lavadora 04 se inicializa en mantenimiento como ejemplo. Para habilitarla: Catálogo de máquinas > Editar > Estado del equipo: Habilitada > Guardar lavadora. Mantenimiento significa fuera de servicio.
+
+## Reloj en producción
+railway.json inicia deploy/start.sh: migra sin borrar datos, optimiza Laravel y ejecuta el servidor junto con quickwash:sync --watch. El reloj comprueba cada cinco segundos; la pantalla de reservas cada diez. El supervisor reinicia ambos si uno falla. Las peticiones autenticadas sincronizan también como respaldo.
+En otro alojamiento se debe supervisar php artisan quickwash:sync --watch como servicio permanente. Una ejecución puntual php artisan quickwash:sync actualiza estados, pero no sustituye al servicio continuo.
+Zona horaria de la aplicación: America/La_Paz. Los cambios son estados lógicos; no existe conexión IoT a la lavadora física.

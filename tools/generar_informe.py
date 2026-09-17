@@ -12,8 +12,8 @@ from reportlab.graphics import renderSVG
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'entregables'
 RED=HexColor('#A42643'); INK=HexColor('#27313C'); GRAY=HexColor('#737E89'); LINE=HexColor('#C9CFD5')
-d=Drawing(1100,1250)
-def y(v): return 1250-v
+d=Drawing(1100,1350)
+def y(v): return 1350-v
 def text(x,top,s,size=17,color=INK,anchor='middle'):
     d.add(String(x,y(top),s,fontName='Helvetica',fontSize=size,fillColor=color,textAnchor=anchor))
 def path(points,dashed=False):
@@ -39,7 +39,7 @@ def uc(x,top,code,lines,rx=130):
     d.add(Ellipse(x,y(top),rx,38,strokeColor=RED,fillColor=HexColor('#FCF5F7'),strokeWidth=1.6))
     text(x,top-10,code,14,RED)
     for i,line in enumerate(lines): text(x,top+11+i*18,line,16)
-d.add(Rect(180,y(1150),740,1080,strokeColor=LINE,fillColor=white,strokeWidth=1.5))
+d.add(Rect(180,y(1250),740,1180,strokeColor=LINE,fillColor=white,strokeWidth=1.5))
 text(550,103,'QuickWash Campus | V1 Mejorado',23,RED)
 actor(65,360,['Estudiante'])
 actor(1035,360,['Personal de','lavandería'])
@@ -47,12 +47,12 @@ actor(1035,360,['Personal de','lavandería'])
 for target in [(250,255),(250,375),(250,495),(250,615)]:
     path([(95,400),target])
 path([(95,400),(140,150),(420,150)])
-path([(95,400),(130,765),(420,765)])
+path([(95,400),(130,865),(420,865)])
 path([(95,400),(145,700),(710,700),(710,653)])
 path([(1005,400),(960,150),(680,150)])
 path([(1005,400),(845,290)])
 path([(1005,400),(845,450)])
-path([(1005,400),(975,765),(680,765)])
+path([(1005,400),(975,865),(680,865)])
 uc(550,150,'CU-02',['Iniciar sesión'])
 uc(380,255,'CU-01',['Registrar estudiante'])
 uc(380,375,'CU-03',['Consultar disponibilidad'])
@@ -60,19 +60,23 @@ uc(380,495,'CU-04',['Registrar reserva'])
 uc(380,615,'CU-05',['Consultar mis reservas'])
 uc(710,615,'CU-06',['Cancelar reserva'])
 uc(710,290,'CU-07',['Consultar todas','las reservas'],135)
-uc(710,450,'CU-08',['Cambiar estado'],135)
-uc(550,765,'CU-09',['Cerrar sesión'])
-for top, code, title in [(880,'CU-10','Crear lavadora'),(980,'CU-11','Editar lavadora'),(1080,'CU-12','Eliminar lavadora')]:
+uc(710,450,'CU-08',['Cancelar reserva','futura'],135)
+uc(550,865,'CU-09',['Cerrar sesión'])
+for top, code, title in [(980,'CU-10','Crear lavadora'),(1080,'CU-11','Editar lavadora'),(1180,'CU-12','Eliminar lavadora')]:
     path([(1005,400),(990,top),(710,top)])
     uc(550,top,code,[title],160)
+path([(95,400),(130,735),(250,735)])
+uc(380,735,'CU-13',['Confirmar recogida'])
+arrow([(380,697),(380,653)])
+text(440,681,'«extend»',14,RED)
 arrow([(380,457),(380,413)])
 text(437,440,'«include»',14,RED)
 arrow([(580,615),(510,615)])
 text(548,595,'«extend»',14,RED)
 arrow([(710,412),(710,328)])
 text(758,375,'«extend»',14,RED)
-text(550,1180,'Cancelación estudiantil: propia + Pendiente + antes del inicio.',16)
-text(550,1210,'La sesión es precondición de las operaciones protegidas.',16,GRAY)
+text(550,1280,'Cancelación estudiantil: propia + Pendiente + antes del inicio.',16)
+text(550,1310,'La sesión es precondición de las operaciones protegidas.',16,GRAY)
 renderSVG.drawToFile(d,str(OUT/'diagrama-casos-de-uso.svg'))
 
 styles=getSampleStyleSheet()
@@ -123,10 +127,10 @@ para('Fuente de requisitos: enunciado proporcionado por el solicitante. Las deci
 story.append(PageBreak())
 markdown('01-historias-de-usuario.md')
 para('Diagrama de casos de uso','QH1')
-para('Dos actores y doce casos. Flechas include: comportamiento obligatorio. Flechas extend: acciones opcionales desde la consulta. El límite del sistema encierra sus funciones.')
-d.scale(0.44,0.44); d.width=484; d.height=550
+para('Dos actores y trece casos. Flechas include: comportamiento obligatorio. Flechas extend: acciones opcionales desde la consulta. El límite del sistema encierra sus funciones.')
+d.scale(0.41,0.41); d.width=451; d.height=554
 story.append(d)
-para('CU-06 extiende la consulta propia cuando la reserva es elegible. CU-08 extiende la consulta global cuando el personal elige actualizar. Iniciar sesión se mantiene como precondición, sin exigir reautenticación por operación.','QSmall')
+para('CU-06 extiende la consulta propia cuando la reserva es elegible. CU-13 extiende la consulta propia para recoger. CU-08 extiende la consulta global para cancelar una futura. Iniciar sesión se mantiene como precondición, sin exigir reautenticación por operación.','QSmall')
 para('La fuente PlantUML y el SVG se adjuntan para editar o imprimir el diagrama por separado.','QSmall')
 story.append(PageBreak())
 markdown('02-casos-de-uso.md')
@@ -185,12 +189,15 @@ evidences = [
     ('23-eliminacion-confirmada.png', 'Eliminación confirmada',
      'La lavadora de prueba se retiró del catálogo después de confirmar. El mensaje acredita la operación.',
      'HU-12 / CU-12. La eliminación lógica conserva el historial.'),
-    ('24-estado-en-proceso-guardado.png', 'Inicio manual confirmado',
-     'QW-0008 es una reserva de prueba local preparada con horario anterior para reproducir el caso sin esperar. Se eligió En proceso, se pulsó Actualizar y se confirmó.',
-     'El estado guardado cambia a En proceso; el horario terminado no genera cambios automáticos.'),
-    ('25-finalizacion-guardada.png', 'Finalización manual confirmada',
-     'Desde En proceso se eligió Finalizada, se pulsó Actualizar y se confirmó. El estudiante también vio Finalizada al iniciar sesión.',
-     'La prueba se realizó en local con datos de demostración; no se modificó la reserva real del sitio publicado.'),
+    ('26-inicio-automatico.png', 'Lavado iniciado automáticamente',
+     'Alex reservó Lavadora 01 con diez prendas desde el formulario. En la base local se desplazó únicamente el intervalo de prueba, manteniendo sesenta minutos, para observar el fin sin esperar una hora.',
+     'La tabla pasó a En proceso sin intervención del personal ni recarga manual; se conservó el filtro de fecha.'),
+    ('27-esperando-recogida.png', 'Lavado terminado y máquina ocupada',
+     'Al terminar el intervalo real, la tabla se actualizó a Esperando recogida y habilitó Recogido para el estudiante propietario.',
+     'HU-13 / CU-13. La máquina permanece ocupada hasta confirmar. Volver en el diálogo conserva el estado.'),
+    ('28-recogido-finalizado.png', 'Recogida confirmada por el estudiante',
+     'Alex pulsó Recogido y confirmó el retiro de las prendas. QW-0009 cambió a Finalizado y registró la hora de recogida.',
+     'HU-13 / CU-13. Lavadora 01 volvió a estar seleccionable en la consulta de disponibilidad. La prueba usa datos ficticios locales.'),
 ]
 for index, (filename, title, description, result) in enumerate(evidences, 1):
     para(f'Evidencia {index:02d} | {title}', 'QH1')
@@ -203,7 +210,7 @@ for index, (filename, title, description, result) in enumerate(evidences, 1):
     story.append(im)
     story.append(Spacer(1,12))
     para(result, 'QBody')
-    para(f'Archivo: capturas/{filename}. Captura real de la aplicación local, tomada el 15 o 16/09/2026.', 'QSmall')
+    para(f'Archivo: capturas/{filename}. Captura real de la aplicación local, de las verificaciones del 15 al 17/09/2026.', 'QSmall')
     if index < len(evidences):
         story.append(PageBreak())
 doc=SimpleDocTemplate(str(OUT/'QuickWash-Campus-Informe.pdf'),pagesize=A4,rightMargin=42,leftMargin=42,topMargin=51,bottomMargin=53,title='QuickWash Campus - V1 Mejorado',author='Proyecto QuickWash Campus')

@@ -43,7 +43,7 @@ Como estudiante, quiero consultar mis reservas y sus estados para organizar mis 
 Prioridad: alta. Caso: CU-05.
 - Solo veo mis reservas, con código, máquina, fecha, intervalo, prendas y estado.
 - Puedo filtrar por fecha, estado y búsqueda; el historial se pagina.
-- Al actualizar la página veo el estado guardado por el personal.
+- El listado actualiza los estados cada diez segundos sin perder los filtros. El inicio ocurre por horario y el fin requiere mi confirmación de recogida.
 
 ## HU-06 · Cancelar reserva
 Como estudiante, quiero cancelar una reserva pendiente antes de su inicio para liberar el turno.
@@ -60,14 +60,13 @@ Prioridad: alta. Caso: CU-07.
 - Un estudiante no accede a información ajena mediante este listado.
 - El personal no edita estudiante, máquina, prendas ni horario.
 
-## HU-08 · Cambiar estado
-Como personal, quiero actualizar el estado de una reserva para que el estudiante conozca el avance.
-Prioridad: alta. Caso: CU-08.
-- Toda reserva nueva comienza Pendiente.
-- A partir de su inicio puede pasar a En proceso y luego a Finalizada.
-- El personal puede cancelar desde Pendiente o En proceso.
-- No se reabren estados terminales ni se salta de Pendiente a Finalizada.
-- Se rechazan intentos de modificar otros campos junto al estado.
+## HU-08 · Supervisar y cancelar reservas futuras
+Como personal, quiero supervisar los estados automáticos y cancelar reservas pendientes futuras ante una incidencia para organizar el servicio.
+Prioridad: alta. Caso: CU-08. Requisito revisado por el solicitante el 17/09/2026.
+- El personal consulta todas las reservas, pero no inicia ni finaliza lavados manualmente.
+- Solo puede cancelar una reserva Pendiente antes del horario reservado.
+- No puede cambiar el estudiante, la máquina, las prendas ni el horario de la reserva.
+- El sistema inicia al llegar la hora y pasa a Esperando recogida al terminar; solo el estudiante confirma la recogida.
 
 ## HU-09 · Cerrar sesión
 Como usuario autenticado, quiero cerrar sesión para proteger mi cuenta al terminar.
@@ -86,7 +85,7 @@ Prioridad: alta. Caso: CU-10. Ampliación solicitada después de la entrega inic
 Como personal, quiero editar los datos y habilitar o poner en mantenimiento un equipo para reflejar su condición real.
 Prioridad: alta. Caso: CU-11.
 - Mantenimiento significa fuera de servicio y no depende de la ocupación de turnos.
-- No se permite pasar a mantenimiento si existen reservas Pendientes o En proceso.
+- No se permite pasar a mantenimiento si existen reservas Pendientes, En proceso o Esperando recogida.
 - Habilitar una lavadora vuelve a ofrecer sus turnos libres.
 
 ## HU-12 · Eliminar lavadora
@@ -96,15 +95,27 @@ Prioridad: alta. Caso: CU-12.
 - Se aplica eliminación lógica: las reservas históricas y su relación con el equipo se conservan.
 - Solo Personal puede ejecutar la acción; se revalidan las restricciones al guardar.
 
-## Reglas de negocio
-RN-01: una lavadora no puede asignarse a más de un estudiante en el mismo turno.
-RN-02: máximo tres reservas activas por estudiante.
-RN-03: el estudiante solo cancela Pendientes.
-RN-04: el personal consulta todas las reservas y únicamente modifica su estado.
-RN-05: cancelación estudiantil solo antes del inicio, en conjunto con RN-03.
+## HU-13 · Confirmar recogida
+Como estudiante, quiero pulsar Recogido después de retirar mi ropa para finalizar la reserva y liberar la máquina.
+Prioridad: alta. Caso: CU-13.
+- El botón aparece solo en mis reservas en Esperando recogida, después del fin real del lavado.
+- Un diálogo pide confirmar que ya retiré toda la ropa; Volver conserva el estado.
+- Confirmar guarda Finalizado y la fecha de recogida, libera mi cupo y permite iniciar el siguiente lavado.
+- Personal y otros estudiantes no pueden confirmar en mi nombre; tampoco se puede adelantar la recogida.
+- Repetir una confirmación ya completada no cambia la hora ni reinicia el siguiente lavado.
+
+## Reglas de negocio vigentes
+RN-01: un turno por máquina y estudiante; nunca se inicia otro lavado mientras quede ropa sin recoger.
+RN-02: máximo tres activas: Pendiente, En proceso y Esperando recogida.
+RN-03: solo se cancela Pendiente antes del horario original, tanto estudiante como personal; el estudiante solo cancela la propia.
+RN-04: personal consulta todas las reservas y administra máquinas; no edita datos de las reservas ni confirma recogidas.
+RN-05: Pendiente pasa automáticamente a En proceso al inicio, y a Esperando recogida al fin real. No existe finalización automática.
+RN-06: solo la recogida confirmada por el estudiante produce Finalizado y libera la ocupación física.
+RN-07: una máquina con recogida pendiente no admite nuevas reservas. Los turnos ya reservados esperan en orden y empiezan al liberarse; mantienen sus sesenta minutos y muestran inicio y fin reales.
 
 ## Supuestos explícitos
-Activas: Pendiente y En proceso. Turnos: 60 minutos, 08:00 a 20:00, todos los días; último inicio 19:00. Anticipación: 30 días. Zona: America/La_Paz. Prendas: entero de 1 a 100, sin inferir peso.
-Se permite al personal cancelar En proceso por una incidencia. No hay notificaciones, registro de recogida, cobros ni automatizaciones.
-El catálogo inicial incluye Lavadora 04 en mantenimiento como dato de demostración. La ampliación solicitada habilita crear, editar y eliminar lavadoras desde Personal. La restricción de modificar únicamente el estado sigue aplicándose a los datos de cada reserva.
-Los estados de reserva son manuales: el horario habilita iniciar, pero no inicia ni finaliza automáticamente un lavado. El personal elige estado, pulsa Actualizar y confirma.
+Turnos: sesenta minutos, inicio entre 08:00 y 19:00, todos los días; horizonte de treinta días. Zona: America/La_Paz. Prendas: entero de 1 a 100, sin inferir peso.
+Un retraso de recogida puede prolongar un lavado más allá de las 20:00; no se acorta su duración. No se implementa expulsión automática de reservas ni avisos por correo o SMS.
+El sistema automatiza el registro del estado; no controla físicamente el motor de la lavadora. Se supone que el estudiante entrega la ropa a tiempo.
+Lavadora 04 se inicializa en mantenimiento como dato de demostración: Personal puede habilitarla desde Editar. Mantenimiento y ocupación son conceptos independientes.
+La revisión de recogida sustituye el cambio manual de estados del enunciado inicial por solicitud expresa del usuario.
