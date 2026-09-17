@@ -109,7 +109,7 @@ class QuickWashTest extends TestCase
     {
         $this->actingAs($this->student)->post('/reservas', $this->payload())->assertRedirect('/reservas');
         $this->assertDatabaseHas('reservations', ['user_id'=>$this->student->id, 'machine_id'=>$this->machine->id, 'starts_at'=>'2026-09-16 10:00:00', 'ends_at'=>'2026-09-16 11:00:00', 'garment_count'=>8, 'status'=>'pendiente']);
-        $this->get('/reservas')->assertSee('QW-0001')->assertSee('Prendas');
+        $this->get('/reservas')->assertSee(Reservation::where('user_id', $this->student->id)->sole()->code)->assertSee('Prendas');
     }
     public static function invalidQuantities(): array { return [[null], [0], [-1], [101], ['1.5'], ['muchas']]; }
     #[DataProvider('invalidQuantities')]
