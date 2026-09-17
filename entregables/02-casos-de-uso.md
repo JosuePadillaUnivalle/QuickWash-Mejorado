@@ -3,7 +3,7 @@ QuickWash Campus | V1 Mejorado
 
 ## Actores
 Estudiante: registra su cuenta, consulta disponibilidad, reserva y consulta/cancela solicitudes propias.
-Personal de lavandería: consulta todas las solicitudes y modifica estados.
+Personal de lavandería: consulta todas las solicitudes, modifica sus estados y administra el catálogo de lavadoras.
 La base de datos es interna, no un actor.
 
 ## CU-01 · Registrar estudiante
@@ -54,7 +54,7 @@ Punto de extensión: selección de actualización de una reserva.
 
 ## CU-08 · Cambiar estado
 Actor: Personal. Precondiciones: sesión de personal; reserva con transición disponible.
-Flujo: elegir estado desde el listado; confirmar; validar rol/transición; guardar exclusivamente estado; mostrar resultado.
+Flujo: elegir nuevo estado desde el listado; pulsar Actualizar; confirmar; validar rol/transición; guardar exclusivamente estado; mostrar resultado.
 Alternativas: salto inválido, inicio anticipado, conflicto de estado o cambio de otro campo; rechazar.
 Postcondición: el estudiante puede consultar el nuevo estado. HU-08.
 Extiende CU-07: consultar no exige modificar.
@@ -64,8 +64,23 @@ Actores: Estudiante y Personal. Precondición: sesión activa.
 Flujo: pulsar Cerrar sesión; invalidar sesión; regresar a Ingresar.
 Postcondición: rutas protegidas inaccesibles sin autenticarse. HU-09.
 
+## CU-10 · Crear lavadora
+Actor: Personal. Precondición: sesión del personal.
+Flujo: abrir catálogo; Crear lavadora; ingresar nombre, capacidad, ubicación y estado; guardar; validar; mostrar equipo.
+Alternativas: datos inválidos o nombre repetido; informar sin guardar. Postcondición: lavadora registrada. HU-10.
+
+## CU-11 · Editar lavadora
+Actor: Personal. Precondición: lavadora existente y sesión del personal.
+Flujo: abrir Editar desde el catálogo; modificar datos; guardar; validar; mostrar resultado.
+Alternativas: datos inválidos o paso a mantenimiento con reservas activas; rechazar. Postcondición: equipo actualizado. HU-11.
+
+## CU-12 · Eliminar lavadora
+Actor: Personal. Precondición: lavadora existente sin reservas activas.
+Flujo: pulsar Eliminar; confirmar; revalidar permisos y reservas; retirar del catálogo mediante eliminación lógica.
+Alternativas: hay reservas activas o el equipo ya fue eliminado; no retirar. Postcondición: no admite nuevas reservas y conserva su historial. HU-12.
+
 ## Diagrama y semántica
 Ver diagrama-casos-de-uso.svg y su fuente editable .puml.
 Asociaciones: línea continua. Include/extend: línea discontinua dirigida al caso incluido/base.
 Iniciar sesión es precondición de operaciones protegidas, no include repetido: una sesión permite varias operaciones.
-No se modelan notificaciones, cobros ni mantenimiento de equipos como funciones de esta V1.
+No se modelan notificaciones ni cobros. CU-10 a CU-12 incorporan la ampliación de administración del catálogo solicitada; no cambian la regla de edición exclusiva del estado en las reservas.

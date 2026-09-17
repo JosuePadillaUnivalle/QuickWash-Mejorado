@@ -76,3 +76,10 @@ El repositorio entrega el código y los entregables. El puerto 8010 es local, no
 La versión inicial publicada se conserva. Un despliegue público de la mejorada requiere un destino independiente.
 No hay avisos por correo, SMS, pagos, lectura del peso ni cambios automáticos.
 Objetivo pendiente de validación: medir tiempo de espera, número de visitas sin disponibilidad y satisfacción en un piloto de campus.
+
+## Ampliación del catálogo y aclaración de estados
+Resultado vigente: 59 pruebas y 340 aserciones aprobadas. La cifra de 51 anterior corresponde a la entrega institucional previa.
+Se probaron alta, edición, habilitación, validación de datos, permisos, eliminación lógica, conservación del historial y bloqueo de mantenimiento/eliminación con reservas activas. También se verificó un turno con más de cinco horas de atraso: no cambia solo, pero Personal puede registrar En proceso y después Finalizada.
+En navegador local se creó Lavadora prueba de flujo, se editó de 10 a 12 kg, se puso en mantenimiento y se eliminó mediante confirmación. Para probar estados sin esperar se preparó QW-0008 con fecha anterior usando el servicio de reservas y reloj de prueba solo durante la preparación. En el navegador se guardaron En proceso y Finalizada mediante Actualizar y confirmación; Alex vio Finalizada al ingresar. No se cambió el reloj del equipo ni la reserva real de Railway.
+Se corrigió el aviso Disponible en este turno para horarios ya iniciados. El selector ahora comienza en Seleccionar nuevo estado para evitar confundir la opción con el estado guardado.
+Las capturas 21-catalogo-administrable.png, 22-edicion-mantenimiento.png, 23-eliminacion-confirmada.png, 24-estado-en-proceso-guardado.png y 25-finalizacion-guardada.png documentan esta ampliación. Total vigente: 25 PNG, todos en el ZIP de capturas. Las capturas iniciales reflejan el alcance anterior.

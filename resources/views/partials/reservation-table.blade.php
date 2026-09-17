@@ -3,11 +3,12 @@
 @if(auth()->user()->isStaff())<td><strong>{{ $reservation->user->name }}</strong><small>{{ $reservation->user->email }}</small></td>@endif
 <td><strong>{{ $reservation->starts_at->format('d/m/Y') }}</strong><small>{{ $reservation->starts_at->format('H:i') }} – {{ $reservation->ends_at->format('H:i') }}</small></td>
 <td><span class="garment-badge">{{ $reservation->garment_count ?? 'No registrada' }}</span>@if(is_null($reservation->garment_count))<small>Reserva de versión inicial</small>@endif</td>
-<td><span class="status {{ $reservation->status }}">{{ \App\Models\Reservation::LABELS[$reservation->status] }}</span></td>
+<td><span class="status {{ $reservation->status }}">{{ \App\Models\Reservation::LABELS[$reservation->status] }}</span>
+@if($reservation->ends_at->lte(now()) && in_array($reservation->status, \App\Models\Reservation::ACTIVE))<small>Turno terminado · {{ $reservation->status === 'pendiente' ? 'Sin inicio registrado' : 'Falta confirmar finalización' }}</small>@endif</td>
 @unless($compact ?? false)<td>
 @if(auth()->user()->isStaff() && count(\App\Models\Reservation::TRANSITIONS[$reservation->status]))
 <form method="POST" action="{{ route('reservations.status', $reservation) }}" class="inline-form" data-confirm="¿Actualizar el estado de la reserva {{ $reservation->code }}?">@csrf @method('PATCH')
-<select name="status" aria-label="Nuevo estado de {{ $reservation->code }}">@foreach(\App\Models\Reservation::TRANSITIONS[$reservation->status] as $next)<option value="{{ $next }}" @disabled($next === 'en_proceso' && $reservation->starts_at->isFuture())>{{ \App\Models\Reservation::LABELS[$next] }}{{ $next === 'en_proceso' && $reservation->starts_at->isFuture() ? ' (desde '.$reservation->starts_at->format('d/m H:i').')' : '' }}</option>@endforeach</select><button class="button small">Actualizar</button></form>
+<select name="status" required aria-label="Nuevo estado de {{ $reservation->code }}"><option value="" selected disabled>Seleccionar nuevo estado</option>@foreach(\App\Models\Reservation::TRANSITIONS[$reservation->status] as $next)<option value="{{ $next }}" @disabled($next === 'en_proceso' && $reservation->starts_at->isFuture())>{{ \App\Models\Reservation::LABELS[$next] }}{{ $next === 'en_proceso' && $reservation->starts_at->isFuture() ? ' (desde '.$reservation->starts_at->format('d/m H:i').')' : '' }}</option>@endforeach</select><button class="button small">Actualizar</button></form>
 @elseif(!auth()->user()->isStaff() && $reservation->canBeCancelledByStudent())
 <form method="POST" action="{{ route('reservations.cancel', $reservation) }}" data-confirm="¿Cancelar la reserva {{ $reservation->code }}? El turno quedará libre para otro estudiante.">@csrf @method('PATCH')<button class="button small danger-outline">Cancelar</button></form>
 @else<span class="muted">{{ !auth()->user()->isStaff() && $reservation->status === 'pendiente' ? 'Horario iniciado' : 'Sin acciones' }}</span>@endif

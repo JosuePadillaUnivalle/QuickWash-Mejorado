@@ -39,5 +39,13 @@
     "capturas_nuevas_en_pdf": 13,
     "restauracion_sql": "OK",
     "correo_demo": "estudiante@est.univalle.edu"
+  },
+  "ampliacion_catalogo": {
+    "pruebas": 59,
+    "aserciones": 340,
+    "capturas_totales": 25,
+    "estados_manuales": true,
+    "crud_personal": true,
+    "reserva_prueba_local": "QW-0008"
   }
 }

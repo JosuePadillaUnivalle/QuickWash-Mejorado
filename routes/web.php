@@ -22,5 +22,10 @@ Route::middleware(['auth', 'student.email'])->group(function () {
     Route::middleware('role:personal')->group(function () {
         Route::patch('/reservas/{reservation}/estado', [ReservationController::class, 'updateStatus'])->name('reservations.status');
         Route::get('/maquinas', [MachineController::class, 'index'])->name('machines.index');
+        Route::get('/maquinas/crear', [MachineController::class, 'create'])->name('machines.create');
+        Route::post('/maquinas', [MachineController::class, 'store'])->name('machines.store');
+        Route::get('/maquinas/{machine}/editar', [MachineController::class, 'edit'])->name('machines.edit');
+        Route::patch('/maquinas/{machine}', [MachineController::class, 'update'])->name('machines.update');
+        Route::delete('/maquinas/{machine}', [MachineController::class, 'destroy'])->name('machines.destroy');
     });
 });

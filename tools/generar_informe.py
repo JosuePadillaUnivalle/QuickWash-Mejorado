@@ -12,8 +12,8 @@ from reportlab.graphics import renderSVG
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'entregables'
 RED=HexColor('#A42643'); INK=HexColor('#27313C'); GRAY=HexColor('#737E89'); LINE=HexColor('#C9CFD5')
-d=Drawing(1100,900)
-def y(v): return 900-v
+d=Drawing(1100,1250)
+def y(v): return 1250-v
 def text(x,top,s,size=17,color=INK,anchor='middle'):
     d.add(String(x,y(top),s,fontName='Helvetica',fontSize=size,fillColor=color,textAnchor=anchor))
 def path(points,dashed=False):
@@ -39,7 +39,7 @@ def uc(x,top,code,lines,rx=130):
     d.add(Ellipse(x,y(top),rx,38,strokeColor=RED,fillColor=HexColor('#FCF5F7'),strokeWidth=1.6))
     text(x,top-10,code,14,RED)
     for i,line in enumerate(lines): text(x,top+11+i*18,line,16)
-d.add(Rect(180,y(815),740,745,strokeColor=LINE,fillColor=white,strokeWidth=1.5))
+d.add(Rect(180,y(1150),740,1080,strokeColor=LINE,fillColor=white,strokeWidth=1.5))
 text(550,103,'QuickWash Campus | V1 Mejorado',23,RED)
 actor(65,360,['Estudiante'])
 actor(1035,360,['Personal de','lavandería'])
@@ -62,14 +62,17 @@ uc(710,615,'CU-06',['Cancelar reserva'])
 uc(710,290,'CU-07',['Consultar todas','las reservas'],135)
 uc(710,450,'CU-08',['Cambiar estado'],135)
 uc(550,765,'CU-09',['Cerrar sesión'])
+for top, code, title in [(880,'CU-10','Crear lavadora'),(980,'CU-11','Editar lavadora'),(1080,'CU-12','Eliminar lavadora')]:
+    path([(1005,400),(990,top),(710,top)])
+    uc(550,top,code,[title],160)
 arrow([(380,457),(380,413)])
 text(437,440,'«include»',14,RED)
 arrow([(580,615),(510,615)])
 text(548,595,'«extend»',14,RED)
 arrow([(710,412),(710,328)])
 text(758,375,'«extend»',14,RED)
-text(550,848,'Cancelación estudiantil: propia + Pendiente + antes del inicio.',16)
-text(550,875,'La sesión es precondición de las operaciones protegidas.',16,GRAY)
+text(550,1180,'Cancelación estudiantil: propia + Pendiente + antes del inicio.',16)
+text(550,1210,'La sesión es precondición de las operaciones protegidas.',16,GRAY)
 renderSVG.drawToFile(d,str(OUT/'diagrama-casos-de-uso.svg'))
 
 styles=getSampleStyleSheet()
@@ -120,8 +123,8 @@ para('Fuente de requisitos: enunciado proporcionado por el solicitante. Las deci
 story.append(PageBreak())
 markdown('01-historias-de-usuario.md')
 para('Diagrama de casos de uso','QH1')
-para('Dos actores y nueve casos. Flechas include: comportamiento obligatorio. Flechas extend: acciones opcionales desde la consulta. El límite del sistema encierra sus funciones.')
-d.scale(0.46,0.46); d.width=506; d.height=414
+para('Dos actores y doce casos. Flechas include: comportamiento obligatorio. Flechas extend: acciones opcionales desde la consulta. El límite del sistema encierra sus funciones.')
+d.scale(0.44,0.44); d.width=484; d.height=550
 story.append(d)
 para('CU-06 extiende la consulta propia cuando la reserva es elegible. CU-08 extiende la consulta global cuando el personal elige actualizar. Iniciar sesión se mantiene como precondición, sin exigir reautenticación por operación.','QSmall')
 para('La fuente PlantUML y el SVG se adjuntan para editar o imprimir el diagrama por separado.','QSmall')
@@ -162,8 +165,8 @@ evidences = [
      'Al elegir Finalizada, el listado muestra las tres reservas que coinciden. La cuenta demo de Alex ya usa el dominio institucional.',
      'HU-07 / CU-07. Las reservas finalizadas conservan sus datos y no pueden reabrirse.'),
     ('17-catalogo-personal.png', 'Catálogo de lavadoras',
-     'El personal consulta las lavadoras habilitadas y el equipo en mantenimiento. El catálogo es de consulta en esta versión.',
-     'La disponibilidad por turno se administra mediante las reservas.'),
+     'Captura de la entrega anterior: catálogo de consulta. La ampliación actual incorpora las acciones de administración mostradas en las evidencias siguientes.',
+     'Se conserva como evidencia de evolución; la interfaz actual permite crear, editar y eliminar.'),
     ('18-cuenta-demo-institucional.png', 'Nuevo correo de demostración',
      'La cuenta demo ingresa como estudiante@est.univalle.edu. Conserva su contraseña de demostración y su historial.',
      'HU-02 / CU-02. El ingreso fue aceptado y abrió el panel de Alex.'),
@@ -173,6 +176,21 @@ evidences = [
     ('20-panel-movil-institucional.png', 'Panel en pantalla móvil',
      'Verificación en 390 por 844 píxeles. El panel conserva la navegación, el logo y sus indicadores en pantalla pequeña.',
      'Resultado: sin desbordamiento horizontal del documento. Las tablas se desplazan dentro de su propio contenedor.'),
+    ('21-catalogo-administrable.png', 'Administración del catálogo',
+     'El personal dispone de Crear lavadora, Editar y Eliminar, con el número de reservas activas por equipo.',
+     'HU-10 a HU-12. El mantenimiento es independiente de la ocupación.'),
+    ('22-edicion-mantenimiento.png', 'Edición de una lavadora',
+     'Prueba local: se creó Lavadora prueba de flujo, se editó su capacidad de 10 a 12 kg y se guardó Mantenimiento.',
+     'HU-11 / CU-11. Los datos y el estado del equipo se guardaron correctamente.'),
+    ('23-eliminacion-confirmada.png', 'Eliminación confirmada',
+     'La lavadora de prueba se retiró del catálogo después de confirmar. El mensaje acredita la operación.',
+     'HU-12 / CU-12. La eliminación lógica conserva el historial.'),
+    ('24-estado-en-proceso-guardado.png', 'Inicio manual confirmado',
+     'QW-0008 es una reserva de prueba local preparada con horario anterior para reproducir el caso sin esperar. Se eligió En proceso, se pulsó Actualizar y se confirmó.',
+     'El estado guardado cambia a En proceso; el horario terminado no genera cambios automáticos.'),
+    ('25-finalizacion-guardada.png', 'Finalización manual confirmada',
+     'Desde En proceso se eligió Finalizada, se pulsó Actualizar y se confirmó. El estudiante también vio Finalizada al iniciar sesión.',
+     'La prueba se realizó en local con datos de demostración; no se modificó la reserva real del sitio publicado.'),
 ]
 for index, (filename, title, description, result) in enumerate(evidences, 1):
     para(f'Evidencia {index:02d} | {title}', 'QH1')

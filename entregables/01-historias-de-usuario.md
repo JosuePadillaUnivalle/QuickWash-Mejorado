@@ -76,6 +76,26 @@ Prioridad: media. Caso: CU-09.
 - Volver a una ruta protegida solicita ingreso.
 - Cerrar sesión usa POST protegido.
 
+## HU-10 · Crear lavadora
+Como personal, quiero crear lavadoras con nombre, capacidad, ubicación y estado de servicio para ampliar el catálogo.
+Prioridad: alta. Caso: CU-10. Ampliación solicitada después de la entrega inicial.
+- Solo Personal puede crear; los datos se validan y no se admiten nombres repetidos.
+- Las lavadoras habilitadas aparecen en la consulta estudiantil; mantenimiento impide reservar.
+
+## HU-11 · Editar lavadora
+Como personal, quiero editar los datos y habilitar o poner en mantenimiento un equipo para reflejar su condición real.
+Prioridad: alta. Caso: CU-11.
+- Mantenimiento significa fuera de servicio y no depende de la ocupación de turnos.
+- No se permite pasar a mantenimiento si existen reservas Pendientes o En proceso.
+- Habilitar una lavadora vuelve a ofrecer sus turnos libres.
+
+## HU-12 · Eliminar lavadora
+Como personal, quiero retirar una lavadora del catálogo para que deje de recibir reservas.
+Prioridad: alta. Caso: CU-12.
+- Se solicita confirmación y se rechaza la operación mientras existan reservas activas.
+- Se aplica eliminación lógica: las reservas históricas y su relación con el equipo se conservan.
+- Solo Personal puede ejecutar la acción; se revalidan las restricciones al guardar.
+
 ## Reglas de negocio
 RN-01: una lavadora no puede asignarse a más de un estudiante en el mismo turno.
 RN-02: máximo tres reservas activas por estudiante.
@@ -86,4 +106,5 @@ RN-05: cancelación estudiantil solo antes del inicio, en conjunto con RN-03.
 ## Supuestos explícitos
 Activas: Pendiente y En proceso. Turnos: 60 minutos, 08:00 a 20:00, todos los días; último inicio 19:00. Anticipación: 30 días. Zona: America/La_Paz. Prendas: entero de 1 a 100, sin inferir peso.
 Se permite al personal cancelar En proceso por una incidencia. No hay notificaciones, registro de recogida, cobros ni automatizaciones.
-El catálogo se prepara en la instalación; el CRUD de equipos de la primera versión queda fuera de la interfaz del personal.
+El catálogo inicial incluye Lavadora 04 en mantenimiento como dato de demostración. La ampliación solicitada habilita crear, editar y eliminar lavadoras desde Personal. La restricción de modificar únicamente el estado sigue aplicándose a los datos de cada reserva.
+Los estados de reserva son manuales: el horario habilita iniciar, pero no inicia ni finaliza automáticamente un lavado. El personal elige estado, pulsa Actualizar y confirma.

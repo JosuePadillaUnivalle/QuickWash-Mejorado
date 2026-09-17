@@ -44,3 +44,7 @@ Exportación reproducible con datos ficticios: entregables/base-datos/quickwash-
 El SQL es SQLite, no MySQL. Importar en una base vacía con una herramienta SQLite; no sobre una base existente.
 La instalación recomendada usa migraciones + DemoSeeder para generar fechas relativas al día.
 La base operativa, .env, sesiones y usuarios reales no se publican en el repositorio.
+
+## Administración del catálogo
+El personal puede crear, editar y retirar lavadoras. La baja actualiza deleted_at; las reservas conservan su relación mediante withTrashed. El estado de mantenimiento no se deriva de las reservas. La edición que retira de servicio y la eliminación revalidan que no haya Pendientes ni En proceso dentro de una transacción con bloqueo de la máquina, compatible con el bloqueo de las nuevas reservas.
+No se requiere migración adicional: los campos y la eliminación lógica ya existían.

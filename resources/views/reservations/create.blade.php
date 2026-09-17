@@ -17,7 +17,7 @@
 @php($maintenance = $machine->status !== 'disponible')
 @php($disabled = $busy || $maintenance || !$start->isFuture() || $active >= 3)
 <label class="machine-card machine-option {{ $disabled ? 'unavailable' : '' }}">
-<div class="machine-visual {{ $maintenance ? 'maintenance' : '' }}"><span class="status {{ $maintenance ? 'pendiente' : ($busy ? 'en_proceso' : 'finalizada') }}">{{ $maintenance ? 'Mantenimiento' : ($busy ? 'Ocupada en este turno' : 'Disponible en este turno') }}</span><x-icon class="big-washer"/></div>
+<div class="machine-visual {{ $maintenance ? 'maintenance' : '' }}"><span class="status {{ $maintenance || !$start->isFuture() ? 'pendiente' : ($busy ? 'en_proceso' : 'finalizada') }}">{{ $maintenance ? 'Mantenimiento' : (!$start->isFuture() ? 'Horario iniciado' : ($busy ? 'Ocupada en este turno' : 'Disponible en este turno')) }}</span><x-icon class="big-washer"/></div>
 <div class="machine-details"><div class="machine-title"><h3>{{ $machine->name }}</h3><span>{{ $machine->capacity }} kg</span></div><p>Lavadora · Ciclo de 60 minutos</p><div class="location"><x-icon name="pin"/> {{ $machine->location }}</div>
 <span class="machine-choice"><input type="radio" name="machine_id" value="{{ $machine->id }}" data-name="{{ $machine->name }}" @checked(old('machine_id') == $machine->id && !$disabled) @disabled($disabled) required>
 {{ $disabled ? ($maintenance ? 'No disponible' : ($busy ? 'Turno reservado' : ($active >= 3 ? 'Límite alcanzado' : 'Horario iniciado'))) : 'Seleccionar '.$machine->name }}</span></div>

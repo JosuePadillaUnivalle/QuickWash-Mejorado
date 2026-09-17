@@ -245,9 +245,7 @@ class QuickWashTest extends TestCase
         $this->get('/reservas?date=2026-09-17')->assertDontSee($reservation->code);
         $this->get('/reservas?search=Lavadora')->assertSee($reservation->code);
         foreach (['/inicio','/reservas','/maquinas'] as $url) $this->actingAs($this->staff)->get($url)->assertOk();
-        $this->post('/maquinas', [])->assertStatus(405);
-        $this->put('/maquinas/'.$this->machine->id, [])->assertNotFound();
-        $this->delete('/maquinas/'.$this->machine->id)->assertNotFound();
+        $this->post('/maquinas', [])->assertSessionHasErrors(['name', 'capacity', 'location', 'status']);
     }
     public function test_no_cancellation_button_after_start(): void
     {

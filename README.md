@@ -49,7 +49,8 @@ No requiere Node, Vite, colas ni tareas programadas. La tipografía web tiene re
 - El estudiante cancela únicamente Pendiente antes del inicio.
 - Transiciones: Pendiente → En proceso → Finalizada. Personal también puede cancelar desde Pendiente o En proceso.
 - Finalizada y Cancelada son terminales; no se inicia antes de la hora reservada.
-- Catálogo de equipos solo de consulta para personal.
+- Personal: crear, editar y eliminar lavadoras; cambiar Habilitada/Mantenimiento.
+- No se elimina ni pasa a mantenimiento una lavadora con reservas activas. La eliminación conserva el historial.
 
 Decisiones no definidas por el examen: turnos de 60 minutos de 08:00 a 20:00, próximos 30 días, horario Bolivia y cantidad entera de 1 a 100 prendas. La cantidad no equivale a peso; debe respetarse la capacidad en kg.
 No se implementan notificaciones ni procesos automáticos.
@@ -72,7 +73,7 @@ En este Windows, antes de comandos PHP define: $env:PHPRC="$PWD\tools".
 
 Incluye flujos, validaciones, permisos, migración y dos pruebas con cuatro procesos PHP simultáneos. Las pruebas usan bases temporales independientes.
 Resultados: entregables/pruebas. Capturas reales: entregables/capturas.
-Última verificación: 51 pruebas y 273 aserciones aprobadas. El PDF incluye trece nuevas capturas de registro, acceso, reservas, cancelación, personal y vista móvil; hay veinte PNG en total.
+Última verificación: 59 pruebas y 340 aserciones aprobadas. Hay 25 capturas PNG; las 21 a 25 muestran el catálogo administrable y el cambio manual de estados.
 
 ## Entrega académica
 - QuickWash-Campus-Informe.pdf: informe para revisar/imprimir.
@@ -87,3 +88,7 @@ Todos estos archivos se encuentran en entregables/.
 El servidor local no es alojamiento público. Se requiere PHP 8.3+, document root en public/, HTTPS, almacenamiento persistente para SQLite, permisos de escritura en storage/ y bootstrap/cache, APP_ENV=production, APP_DEBUG=false, clave y cuentas propias.
 No ejecutar DemoSeeder en producción ni reutilizar base, clave, cookies o despliegue del proyecto original.
 La reducción de filas debe validarse con un piloto; las pruebas técnicas no miden ese resultado.
+
+## Estados y mantenimiento
+La columna Estado muestra el valor guardado. Para cambiarlo, el personal selecciona un nuevo estado, pulsa Actualizar y confirma. Llegar a la hora solo habilita En proceso; no cambia automáticamente la reserva. Desde En proceso se puede confirmar Finalizada. Si el estudiante no acudió, el personal puede cancelar la pendiente.
+Lavadora 04 se inicializa en mantenimiento como ejemplo. Para habilitarla: Catálogo de máquinas > Editar > Estado del equipo: Habilitada > Guardar lavadora. Mantenimiento no significa que exista una reserva; significa fuera de servicio.
